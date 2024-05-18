@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="13.0.1" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\InterviewTest.Common\InterviewTest.Common.csproj" />
+    <ProjectReference Include="..\InterviewTest.Data\InterviewTest.Data.csproj" />
+    <ProjectReference Include="..\InterviewTest.Entity\InterviewTest.Entity.csproj" />
+    <ProjectReference Include="..\InterviewTest.Service\InterviewTest.Service.csproj" />
+  </ItemGroup>
+
+</Project>
