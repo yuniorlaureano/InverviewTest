@@ -15,7 +15,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InterviewTest.Api", "Interv
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InterviewTest.Test", "InterviewTest.Test\InterviewTest.Test.csproj", "{408F134E-DEBE-4438-A4B8-3EE973EBF296}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InterviewTest.Migrations", "InterviewTest.Migrations\InterviewTest.Migrations.csproj", "{1AA9C2AB-0AD8-4F84-86A2-B742B70E193B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InterviewTest.Migrations", "InterviewTest.Migrations\InterviewTest.Migrations.csproj", "{1AA9C2AB-0AD8-4F84-86A2-B742B70E193B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{3B5C08C3-82A6-41FE-B85D-10F1A6785EAB}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
