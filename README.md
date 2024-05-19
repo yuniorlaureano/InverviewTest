@@ -37,3 +37,10 @@ manually
 with the data in high level details
 - InterviewTest.Test
 >It contains the tests for the whole application.
+
+## Main endpoints
+- POST: /Users. It is a free endpoint to create users. Whe the tests are runs, a user is created like this:
+**email:** "admin@gmail.com", and **password**: "admin". other user can be created. 
+
+- POST: /Security/login. Allow the authentication of the user. It issues a JWT token, which can be provided into 
+ swagger and grant access to the other endpoints. 
