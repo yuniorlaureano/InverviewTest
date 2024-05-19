@@ -105,6 +105,8 @@ namespace InterviewTest.Test
         {
             var user = _userServiceTestFixture.Fixture
                 .Build<UserCreationDto>()
+                .With(x => x.Email, "admin@gmail.com")
+                .With(x => x.Password, "admin")
                 .Create();
 
             await _userServiceTestFixture.UserService.Add(user);

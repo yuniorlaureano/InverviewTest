@@ -14,7 +14,6 @@ namespace InterviewTest.Test
 
         public UserValidationTest()
         {
-            Thread.CurrentThread.CurrentUICulture = new System.Globalization.CultureInfo("en-US");
             _services = DependencyBuilder.GetServices();
             _fixture = new Fixture();
 
