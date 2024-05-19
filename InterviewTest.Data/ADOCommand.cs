@@ -10,17 +10,11 @@ namespace InterviewTest.Data
         Task ExecuteTransaction(Func<SqlCommand, Task> executeCommand);
         SqlParameter CreateParam<T>(string name, T value, SqlDbType type);
         string CreateFilter(SqlCommand command, params SqlFilterParam[] sqlFilterParams);
-        string CreatePaging(int page = 1, int pageSize = 10)
-        {
-            page = page <= 0 ? 1 : page;
-            pageSize = pageSize <= 0 ? 10 : pageSize;
+        string CreatePaging(int page = 1, int pageSize = 10);
 
-            return @$"
-                ORDER BY Id
-                OFFSET {(page - 1) * pageSize} ROWS
-                FETCH NEXT {pageSize} ROWS ONLY   
-            ";
-        }
+        string GenerateInsertColumnsBody(params string[] fields);
+
+        string GenerateUpdateColumnsBody(params string[] fields);
     }
 
     public class ADOCommand : IADOCommand
@@ -94,6 +88,51 @@ namespace InterviewTest.Data
             }
 
             return where.ToString();
+        }
+
+        public string CreatePaging(int page = 1, int pageSize = 10)
+        {
+            page = page <= 0 ? 1 : page;
+            pageSize = pageSize <= 0 ? 10 : pageSize;
+
+            return @$"
+                ORDER BY Id
+                OFFSET {(page - 1) * pageSize} ROWS
+                FETCH NEXT {pageSize} ROWS ONLY   
+            ";
+        }
+
+        public string GenerateInsertColumnsBody(params string[] fields)
+        {
+            var lastFieldIndex = fields.Length - 1;
+            var insertInto = new StringBuilder();
+            var insertValue = new StringBuilder();
+
+            for (int i = 0; i < fields.Length - 1; i++)
+            {
+                insertInto.Append($"{fields[i]},");
+                insertValue.Append($"@{fields[i]},");
+            }
+
+            insertInto.Append($"{fields[lastFieldIndex]}");
+            insertValue.Append($"@{fields[lastFieldIndex]}");
+
+            return $"({insertInto}) VALUES ({insertValue})";
+        }
+
+        public string GenerateUpdateColumnsBody(params string[] fields)
+        {
+            var lastFieldIndex = fields.Length - 1;
+            var udpate = new StringBuilder();
+
+            for (int i = 0; i < fields.Length - 1; i++)
+            {
+                udpate.Append($"{fields[i]} = @{fields[i]},");
+            }
+
+            udpate.Append($"{fields[lastFieldIndex]} = @{fields[lastFieldIndex]}");
+
+            return udpate.ToString();
         }
     }
 

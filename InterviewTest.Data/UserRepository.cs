@@ -6,11 +6,6 @@ using System.Text;
 namespace InterviewTest.Data
 {
     //ToDo: Add serilog 
-    //ToDo: Add fluent validation
-    //ToDo: Add pagination
-    //ToDo: Add authentication
-    //ToDo: Add the inventory part
-    //ToDo: Try to may things a little more generic
     public interface IUserRepository
     {
         public Task<User?> GetById(long id);
@@ -21,6 +16,7 @@ namespace InterviewTest.Data
         public Task Update(User user);
         public Task Delete(long id);
     }
+
     public class UserRepository : IUserRepository
     {
         private readonly IADOCommand _adoCommand;
@@ -34,27 +30,18 @@ namespace InterviewTest.Data
         {
             await _adoCommand.Execute(async (command) =>
             {
-                command.CommandText = @$"INSERT INTO [{nameof(User)}](
-                   {nameof(User.FirstName)},
-                   {nameof(User.LastName)},
-                   {nameof(User.Email)},
-                   {nameof(User.Password)},
-                   {nameof(User.Age)},
-                   {nameof(User.Date)},
-                   {nameof(User.Country)},
-                   {nameof(User.Province)},
-                   {nameof(User.City)}
-                ) VALUES(
-                   @{nameof(User.FirstName)},
-                   @{nameof(User.LastName)},
-                   @{nameof(User.Email)},
-                   @{nameof(User.Password)},
-                   @{nameof(User.Age)},
-                   @{nameof(User.Date)},
-                   @{nameof(User.Country)},
-                   @{nameof(User.Province)},
-                   @{nameof(User.City)}
-                )";
+                command.CommandText = @$"INSERT INTO [{nameof(User)}]
+                    {_adoCommand.GenerateInsertColumnsBody(
+                       nameof(User.FirstName),
+                       nameof(User.LastName),
+                       nameof(User.Email),
+                       nameof(User.Password),
+                       nameof(User.Age),
+                       nameof(User.Date),
+                       nameof(User.Country),
+                       nameof(User.Province),
+                       nameof(User.City)
+                   )}";
 
                 AddParamenters(command, user);
                 command.Parameters.Add(_adoCommand.CreateParam(nameof(user.Password), user.Password, SqlDbType.NVarChar));
@@ -66,25 +53,17 @@ namespace InterviewTest.Data
         {
             await _adoCommand.ExecuteTransaction(async (command) =>
             {
-                command.CommandText = @$"INSERT INTO [{nameof(User)}](
-                   {nameof(User.FirstName)},
-                   {nameof(User.LastName)},
-                   {nameof(User.Email)},
-                   {nameof(User.Age)},
-                   {nameof(User.Date)},
-                   {nameof(User.Country)},
-                   {nameof(User.Province)},
-                   {nameof(User.City)}
-                ) VALUES(
-                   @{nameof(User.FirstName)},
-                   @{nameof(User.LastName)},
-                   @{nameof(User.Email)},
-                   @{nameof(User.Age)},
-                   @{nameof(User.Date)},
-                   @{nameof(User.Country)},
-                   @{nameof(User.Province)},
-                   @{nameof(User.City)}
-                )";
+                command.CommandText = @$"INSERT INTO [{nameof(User)}]
+                {_adoCommand.GenerateInsertColumnsBody(
+                    nameof(User.FirstName),
+                    nameof(User.LastName),
+                    nameof(User.Email),
+                    nameof(User.Age),
+                    nameof(User.Date),
+                    nameof(User.Country),
+                    nameof(User.Province),
+                    nameof(User.City)
+                )}";
 
                 var firstNameParameter = new SqlParameter(nameof(User.FirstName), SqlDbType.NVarChar);
                 var lastNameParameter = new SqlParameter(nameof(User.LastName), SqlDbType.NVarChar);
@@ -199,19 +178,22 @@ namespace InterviewTest.Data
             await _adoCommand.Execute(async (command) =>
             {
                 command.CommandText = @$"UPDATE [{nameof(User)}]
-               SET {nameof(User.FirstName)} = @{nameof(User.FirstName)},
-                   {nameof(User.LastName)} = @{nameof(User.LastName)},
-                   {nameof(User.Age)} = @{nameof(User.Age)},
-                   {nameof(User.Email)} = @{nameof(User.Email)},
-                   {nameof(User.Date)} = @{nameof(User.Date)},
-                   {nameof(User.Country)} = @{nameof(User.Country)},
-                   {nameof(User.Province)} = @{nameof(User.Province)},
-                   {nameof(User.City)} = @{nameof(User.City)}
-               WHERE {nameof(User.Id)} = @{nameof(User.Id)}";
+                   SET 
+                       {_adoCommand.GenerateUpdateColumnsBody(
+                           nameof(User.FirstName),
+                           nameof(User.LastName),
+                           nameof(User.Age),
+                           nameof(User.Email),
+                           nameof(User.Date),
+                           nameof(User.Country),
+                           nameof(User.Province),
+                           nameof(User.City)
+                      )}                    
+                   WHERE {nameof(User.Id)} = @{nameof(User.Id)}";
 
-                AddParamenters(command, user);
-                command.Parameters.Add(_adoCommand.CreateParam(nameof(user.Id), user.Id, SqlDbType.BigInt));
-                await command.ExecuteNonQueryAsync();
+                    AddParamenters(command, user);
+                    command.Parameters.Add(_adoCommand.CreateParam(nameof(user.Id), user.Id, SqlDbType.BigInt));
+                    await command.ExecuteNonQueryAsync();
             });
         }
 

@@ -10,6 +10,7 @@ namespace InterviewTest.Service.Validators
             RuleFor(x => x.Email)
                 .NotNull()
                 .NotEmpty()
+                .EmailAddress()
                 .MaximumLength(50);
 
             RuleFor(x => x.Password)
