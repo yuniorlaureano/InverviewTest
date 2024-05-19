@@ -12,6 +12,7 @@ namespace InterviewTest.Service.Mappings
             CreateMap<StockUpdateDto, Stock>();
             CreateMap<Stock, StockListDto>();
             CreateMap<StockListDto, StockUpdateDto>();
+            CreateMap<AvailableProduct, AvailableProductDto>();
         }
     }
 }

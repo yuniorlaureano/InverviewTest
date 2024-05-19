@@ -46,6 +46,17 @@ namespace InterviewTest.Api.Controllers
             return await _stockService.Get(page, pageSize, transactionType, description);
         }
 
+        [HttpGet("available-products")]
+        [Produces(typeof(IEnumerable<AvailableProductDto>))]
+        public async Task<IEnumerable<AvailableProductDto>> GetProductsInStock(
+           [FromQuery] int page = 1,
+           [FromQuery] int pageSize = 10,
+           TransactionType? transactionType = null)
+        {
+            return await _stockService.GetProductsInStock(page, pageSize, transactionType);
+        }
+
+
         [HttpPost()]
         [AllowAnonymous]
         [Produces(typeof(ErrorResult))]

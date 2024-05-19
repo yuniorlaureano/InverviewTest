@@ -14,6 +14,10 @@ namespace InterviewTest.Service
             int pageSize = 10,
             TransactionType? transactionType = null,
             string? description = null);
+        Task<IEnumerable<AvailableProductDto>> GetProductsInStock(
+            int page = 1,
+            int pageSize = 10,
+            TransactionType? transactionType = null);
         public Task Add(StockCreationDto userDto);
         public Task Update(StockUpdateDto userDto);
         public Task Delete(long id);
@@ -70,6 +74,14 @@ namespace InterviewTest.Service
                 stock.StockDetailListDtos = _mapper.Map<IEnumerable<StockDetailListDto>>(stockListDetails);
             }
             return stocksDto;
+        }
+
+        public async Task<IEnumerable<AvailableProductDto>> GetProductsInStock(
+            int page = 1,
+            int pageSize = 10,
+            TransactionType? transactionType = null)
+        {
+            return _mapper.Map<IEnumerable<AvailableProductDto>>(await _stockRepository.GetProductsInStock(page, pageSize, transactionType));
         }
 
         public async Task Update(StockUpdateDto stockDtos)

@@ -15,6 +15,10 @@ namespace InterviewTest.Data
             int pageSize = 10,
             TransactionType? transactionType = null,
             string? description = null);
+        Task<IEnumerable<AvailableProduct>> GetProductsInStock(
+            int page = 1,
+            int pageSize = 10,
+            TransactionType? transactionType = null);
         public Task Add(Stock stock, IEnumerable<StockDetail> stockDetails);
         public Task Update(Stock stock, IEnumerable<StockDetail> stockDetails);
         public Task Delete(long id);
@@ -134,6 +138,60 @@ namespace InterviewTest.Data
             });
 
             return stocks;
+        }
+
+        public async Task<IEnumerable<AvailableProduct>> GetProductsInStock(
+            int page = 1,
+            int pageSize = 10,
+            TransactionType? transactionType = null)
+        {
+            var availableStock = new List<AvailableProduct>();
+            await _adoCommand.Execute(async (command) =>
+            {
+                var filter = _adoCommand.CreateFilter(command,
+                   new SqlFilterParam(nameof(Stock.TransactionType), transactionType, SqlDbType.TinyInt)
+                );
+
+                var paging = _adoCommand.CreatePaging(page, pageSize, orderBy: $" P.{nameof(Product.Id)}");
+
+                command.CommandText = @$"
+                    SELECT 
+                       P.{nameof(Product.Id)} AS {nameof(AvailableProduct.ProductId)},
+                       P.{nameof(Product.Code)},
+                       P.[{nameof(Product.Name)}],
+                       SUM(CASE 
+                            WHEN S.{nameof(Stock.TransactionType)} = 1 THEN {nameof(StockDetail.Quantity)} 
+                            WHEN S.{nameof(Stock.TransactionType)} = 2 THEN {nameof(StockDetail.Quantity)} * -1 
+                            WHEN SD.{nameof(StockDetail.ProductId)} IS NULL THEN 0
+                        END) As AvailableQuantity,
+                       MAX(P.{nameof(Product.Price)}) AS {nameof(Product.Price)}
+                    FROM {nameof(Stock)} S
+                      JOIN {nameof(StockDetail)} SD ON S.{nameof(Stock.Id)} = SD.{nameof(StockDetail.StockId)}
+                      RIGHT JOIN {nameof(Product)} P ON SD.{nameof(StockDetail.ProductId)} = P.{nameof(Product.Id)}
+                     {filter}
+                    GROUP BY  
+                       P.{nameof(Product.Id)},
+                       P.{nameof(Product.Code)},
+                       P.[{nameof(Product.Name)}]   
+                   {paging}
+                ";
+
+                using var reader = await command.ExecuteReaderAsync();
+
+                while (await reader.ReadAsync())
+                {
+                    availableStock.Add(new AvailableProduct
+                    {
+                        ProductId = reader.GetInt64(nameof(AvailableProduct.ProductId)),
+                        Code = reader.GetString(nameof(AvailableProduct.Code)),
+                        Name = reader.GetString(nameof(AvailableProduct.Name)),
+                        AvailableQuantity = reader.GetInt32(nameof(AvailableProduct.AvailableQuantity)),
+                        Price = reader.GetDecimal(nameof(AvailableProduct.Price))
+                    });
+                }
+            });
+
+            return availableStock;
         }
 
         public async Task Update(Stock stock, IEnumerable<StockDetail> stockDetails)

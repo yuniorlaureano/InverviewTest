@@ -13,7 +13,7 @@ namespace InterviewTest.Data
         SqlParameter CreateParam<T>(string name, T value, SqlDbType type);
         string CreateFilter(SqlCommand command, params SqlFilterParam[] sqlFilterParams);
         string CreateInFilter(SqlCommand command, params SqlFilterParam[] sqlFilterParams);
-        string CreatePaging(int page = 1, int pageSize = 10);
+        string CreatePaging(int page = 1, int pageSize = 10, string orderBy = "Id");
         string GenerateInsertColumnsBody(params string[] fields);
         string GenerateUpdateColumnsBody(params string[] fields);
     }
@@ -132,13 +132,13 @@ namespace InterviewTest.Data
             return filter.ToString();
         }
 
-        public string CreatePaging(int page = 1, int pageSize = 10)
+        public string CreatePaging(int page = 1, int pageSize = 10, string orderBy = "Id")
         {
             page = page <= 0 ? 1 : page;
             pageSize = pageSize <= 0 ? 10 : pageSize;
 
             return @$"
-                ORDER BY Id
+                ORDER BY {orderBy}
                 OFFSET {(page - 1) * pageSize} ROWS
                 FETCH NEXT {pageSize} ROWS ONLY   
             ";
