@@ -6,7 +6,6 @@ using System.Text;
 
 namespace InterviewTest.Data
 {
-    //ToDo: Add serilog 
     public interface IStockRepository
     {
         public Task<Stock?> GetById(long id);

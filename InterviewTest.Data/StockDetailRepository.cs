@@ -4,7 +4,6 @@ using System.Data;
 
 namespace InterviewTest.Data
 {
-    //ToDo: Add serilog 
     public interface IStockDetailRepository
     {
         Task<IEnumerable<StockDetail>> GetByStockId(long stockId);
