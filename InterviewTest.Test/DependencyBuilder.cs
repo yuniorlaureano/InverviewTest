@@ -17,6 +17,7 @@ namespace InterviewTest.Test
             services.AddRepositories();
             services.AddServices();
             services.AddMappings();
+            services.AddValidators();
 
 
             return services.BuildServiceProvider();

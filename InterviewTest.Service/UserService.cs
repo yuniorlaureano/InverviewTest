@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using InterviewTest.Common;
 using InterviewTest.Common.Dto;
 using InterviewTest.Data;
 using InterviewTest.Entity;
@@ -7,8 +8,9 @@ namespace InterviewTest.Service
 {
     public interface IUserService
     {
-        public Task<UserListDto?> Get(long id);
-        public Task<IEnumerable<UserListDto>> Get(byte? age = null, string? country = null);
+        public Task<UserListDto?> GetById(long id);
+        Task<UserListDto?> GetByEmail(string email);
+        public Task<IEnumerable<UserListDto>> Get(int page = 1, int pageSize = 10, byte? age = null, string? country = null);
         public Task Add(UserCreationDto userDto);
         public Task Add(IEnumerable<UserCreationDto> userDtos);
         public Task Update(UserUpdateDto userDto);
@@ -29,6 +31,7 @@ namespace InterviewTest.Service
         public async Task Add(UserCreationDto userDto)
         {
             var user = _mapper.Map<User>(userDto);
+            user.Password = PasswordHasher.HashPassword(userDto.Password);
             await _userRepository.Add(user);
         }
 
@@ -43,15 +46,21 @@ namespace InterviewTest.Service
             await _userRepository.Delete(id);
         }
 
-        public async Task<UserListDto?> Get(long id)
+        public async Task<UserListDto?> GetById(long id)
         {
-            var user = await _userRepository.Get(id);
+            var user = await _userRepository.GetById(id);
             return _mapper.Map<UserListDto>(user);
         }
 
-        public async Task<IEnumerable<UserListDto>> Get(byte? age = null, string? country = null)
+        public async Task<UserListDto?> GetByEmail(string email)
         {
-            var users = await _userRepository.Get(age, country);
+            var user = await _userRepository.GetByEmail(email);
+            return _mapper.Map<UserListDto>(user);
+        }
+
+        public async Task<IEnumerable<UserListDto>> Get(int page = 1, int pageSize = 10, byte? age = null, string? country = null)
+        {
+            var users = await _userRepository.Get(page, pageSize, age, country);
             return _mapper.Map<IEnumerable<UserListDto>>(users);
         }
 

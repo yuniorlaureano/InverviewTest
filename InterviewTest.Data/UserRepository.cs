@@ -13,8 +13,9 @@ namespace InterviewTest.Data
     //ToDo: Try to may things a little more generic
     public interface IUserRepository
     {
-        public Task<User?> Get(long id);
-        public Task<IEnumerable<User>> Get(byte? age, string? country);
+        public Task<User?> GetById(long id);
+        Task<User?> GetByEmail(string email);
+        public Task<IEnumerable<User>> Get(int page = 1, int pageSize = 10, byte? age = null, string? country = null);
         public Task Add(User user);
         public Task Add(IEnumerable<User> user);
         public Task Update(User user);
@@ -22,20 +23,22 @@ namespace InterviewTest.Data
     }
     public class UserRepository : IUserRepository
     {
-        private readonly ISqlFactory _sqlFactory;
-        public UserRepository(ISqlFactory sqlFactory)
+        private readonly IADOCommand _adoCommand;
+
+        public UserRepository(IADOCommand adoCommand)
         {
-            _sqlFactory = sqlFactory;
+            _adoCommand = adoCommand;
         }
 
         public async Task Add(User user)
         {
-            using var connection = await _sqlFactory.GetConnection();
-
-            using var command = connection.CreateCommand();
-            command.CommandText = @$"INSERT INTO [{nameof(User)}](
+            await _adoCommand.Execute(async (command) =>
+            {
+                command.CommandText = @$"INSERT INTO [{nameof(User)}](
                    {nameof(User.FirstName)},
                    {nameof(User.LastName)},
+                   {nameof(User.Email)},
+                   {nameof(User.Password)},
                    {nameof(User.Age)},
                    {nameof(User.Date)},
                    {nameof(User.Country)},
@@ -44,6 +47,8 @@ namespace InterviewTest.Data
                 ) VALUES(
                    @{nameof(User.FirstName)},
                    @{nameof(User.LastName)},
+                   @{nameof(User.Email)},
+                   @{nameof(User.Password)},
                    @{nameof(User.Age)},
                    @{nameof(User.Date)},
                    @{nameof(User.Country)},
@@ -51,61 +56,62 @@ namespace InterviewTest.Data
                    @{nameof(User.City)}
                 )";
 
-            AddParamenters(command, user);
-
-            await command.ExecuteNonQueryAsync();
+                AddParamenters(command, user);
+                command.Parameters.Add(_adoCommand.CreateParam(nameof(user.Password), user.Password, SqlDbType.NVarChar));
+                await command.ExecuteNonQueryAsync();
+            });
         }
 
         public async Task Add(IEnumerable<User> user)
         {
-            using var connection = await _sqlFactory.GetConnection();
-            using SqlTransaction transaction = (SqlTransaction)await connection.BeginTransactionAsync();
-
-            using var command = connection.CreateCommand();
-            command.Transaction = transaction;
-            command.CommandText = @$"INSERT INTO [{nameof(User)}](
-               {nameof(User.FirstName)},
-               {nameof(User.LastName)},
-               {nameof(User.Age)},
-               {nameof(User.Date)},
-               {nameof(User.Country)},
-               {nameof(User.Province)},
-               {nameof(User.City)}
-            ) VALUES(
-               @{nameof(User.FirstName)},
-               @{nameof(User.LastName)},
-               @{nameof(User.Age)},
-               @{nameof(User.Date)},
-               @{nameof(User.Country)},
-               @{nameof(User.Province)},
-               @{nameof(User.City)}
-            )";
-
-            var firstNameParameter = new SqlParameter(nameof(User.FirstName), SqlDbType.NVarChar);
-            var lastNameParameter = new SqlParameter(nameof(User.LastName), SqlDbType.NVarChar);
-            var ageParameter = new SqlParameter(nameof(User.Age), SqlDbType.TinyInt);
-            var dateParameter = new SqlParameter(nameof(User.Date), SqlDbType.Date);
-            var countryParameter = new SqlParameter(nameof(User.Country), SqlDbType.NVarChar);
-            var proviceParameter = new SqlParameter(nameof(User.Province), SqlDbType.NVarChar);
-            var cityParameter = new SqlParameter(nameof(User.City), SqlDbType.NVarChar);
-
-            command.Parameters.AddRange(new[]
+            await _adoCommand.ExecuteTransaction(async (command) =>
             {
-                firstNameParameter,
-                lastNameParameter,
-                ageParameter,
-                dateParameter,
-                countryParameter,
-                proviceParameter,
-                cityParameter
-            });
+                command.CommandText = @$"INSERT INTO [{nameof(User)}](
+                   {nameof(User.FirstName)},
+                   {nameof(User.LastName)},
+                   {nameof(User.Email)},
+                   {nameof(User.Age)},
+                   {nameof(User.Date)},
+                   {nameof(User.Country)},
+                   {nameof(User.Province)},
+                   {nameof(User.City)}
+                ) VALUES(
+                   @{nameof(User.FirstName)},
+                   @{nameof(User.LastName)},
+                   @{nameof(User.Email)},
+                   @{nameof(User.Age)},
+                   @{nameof(User.Date)},
+                   @{nameof(User.Country)},
+                   @{nameof(User.Province)},
+                   @{nameof(User.City)}
+                )";
 
-            try
-            {
+                var firstNameParameter = new SqlParameter(nameof(User.FirstName), SqlDbType.NVarChar);
+                var lastNameParameter = new SqlParameter(nameof(User.LastName), SqlDbType.NVarChar);
+                var emailParameter = new SqlParameter(nameof(User.Email), SqlDbType.NVarChar);
+                var ageParameter = new SqlParameter(nameof(User.Age), SqlDbType.TinyInt);
+                var dateParameter = new SqlParameter(nameof(User.Date), SqlDbType.Date);
+                var countryParameter = new SqlParameter(nameof(User.Country), SqlDbType.NVarChar);
+                var proviceParameter = new SqlParameter(nameof(User.Province), SqlDbType.NVarChar);
+                var cityParameter = new SqlParameter(nameof(User.City), SqlDbType.NVarChar);
+
+                command.Parameters.AddRange(new[]
+                {
+                    firstNameParameter,
+                    lastNameParameter,
+                    emailParameter,
+                    ageParameter,
+                    dateParameter,
+                    countryParameter,
+                    proviceParameter,
+                    cityParameter
+                });
+
                 foreach (var item in user)
                 {
                     firstNameParameter.Value = item.FirstName;
                     lastNameParameter.Value = item.LastName;
+                    emailParameter.Value = item.Email;
                     ageParameter.Value = item.Age;
                     dateParameter.Value = item.Date;
                     countryParameter.Value = item.Country;
@@ -114,117 +120,111 @@ namespace InterviewTest.Data
 
                     await command.ExecuteNonQueryAsync();
                 }
-                await transaction.CommitAsync();
-            }
-            catch (Exception e)
-            {
-                try
-                {
-                    await transaction.RollbackAsync();
-                }
-                catch (SqlException)
-                {
-                    //todo log this and all the other
-                }
-            }
-
-            await command.ExecuteNonQueryAsync();
+            });
         }
 
         public async Task Delete(long id)
         {
-            using var connection = await _sqlFactory.GetConnection();
-            using var command = connection.CreateCommand();
-            command.Parameters.Add(_sqlFactory.CreateParam($"@{nameof(User.Id)}", id, SqlDbType.BigInt));
-            command.CommandText = $"DELETE FROM [{nameof(User)}] WHERE Id = @Id";
-
-            await command.ExecuteNonQueryAsync();
+            await _adoCommand.Execute(async (command) =>
+            {
+                command.Parameters.Add(_adoCommand.CreateParam($"@{nameof(User.Id)}", id, SqlDbType.BigInt));
+                command.CommandText = $"DELETE FROM [{nameof(User)}] WHERE Id = @Id";
+                await command.ExecuteNonQueryAsync();
+            });
         }
 
-        public async Task<User?> Get(long id)
+        public async Task<User?> GetById(long id)
         {
-            using var connection = await _sqlFactory.GetConnection();
-            using var command = connection.CreateCommand();
-            command.Parameters.Add(_sqlFactory.CreateParam($"@{nameof(User.Id)}", id, SqlDbType.BigInt));
-            command.CommandText = $"SELECT * FROM  [{nameof(User)}] WHERE {nameof(User.Id)} = @{nameof(User.Id)}";
-
-            using var reader = await command.ExecuteReaderAsync();
             User? user = null;
-            while (await reader.ReadAsync())
+            await _adoCommand.Execute(async (command) =>
             {
-                user = MapUserFromReader(reader);
-            }
+                command.Parameters.Add(_adoCommand.CreateParam($"@{nameof(User.Id)}", id, SqlDbType.BigInt));
+                command.CommandText = $"SELECT * FROM  [{nameof(User)}] WHERE {nameof(User.Id)} = @{nameof(User.Id)}";
+
+                using var reader = await command.ExecuteReaderAsync();
+                while (await reader.ReadAsync())
+                {
+                    user = MapUserFromReader(reader);
+                }
+            });
 
             return user;
         }
 
-        public async Task<IEnumerable<User>> Get(byte? age, string? country)
+        public async Task<User?> GetByEmail(string email)
         {
-            using var connection = await _sqlFactory.GetConnection();
-            using var command = connection.CreateCommand();
-
-            var where = new StringBuilder();
-            if (age is not null)
+            User? user = null;
+            await _adoCommand.Execute(async (command) =>
             {
-                where.Append($"{nameof(User.Age)} = @{nameof(User.Age)} ");
-                where.Append(" AND ");
-                command.Parameters.Add(_sqlFactory.CreateParam($"@{nameof(User.Age)}", age, SqlDbType.TinyInt));
-            }
+                command.Parameters.Add(_adoCommand.CreateParam($"@{nameof(User.Email)}", email, SqlDbType.NVarChar));
+                command.CommandText = $"SELECT * FROM  [{nameof(User)}] WHERE {nameof(User.Email)} = @{nameof(User.Email)}";
 
-            if (country is not null)
-            {
-                where.Append($"{nameof(User.Country)} = @{nameof(User.Country)} ");
-                where.Append(" AND ");
-                command.Parameters.Add(_sqlFactory.CreateParam($"@{nameof(User.Country)}", country, SqlDbType.NVarChar));
-            }
+                using var reader = await command.ExecuteReaderAsync();
+                while (await reader.ReadAsync())
+                {
+                    user = MapUserFromReader(reader);
+                    user.Password = reader.GetString(nameof(User.Password));
+                }
+            });
 
-            if (where.Length > 0)
-            {
-                where.Remove(where.Length - 4, 4);
-                where.Insert(0, "WHERE ");
-            }
+            return user;
+        }
 
-            command.CommandText = @$"
-                SELECT * FROM  [{nameof(User)}] {where.ToString()}";
-
-            using var reader = await command.ExecuteReaderAsync();
+        public async Task<IEnumerable<User>> Get(int page = 1, int pageSize = 10, byte? age = null, string? country = null)
+        {
             var users = new List<User>();
-            while (await reader.ReadAsync())
+            await _adoCommand.Execute(async (command) =>
             {
-                users.Add(MapUserFromReader(reader));
-            }
+                var filter = _adoCommand.CreateFilter(command,
+                    new SqlFilterParam(nameof(User.Age), age, SqlDbType.TinyInt),
+                    new SqlFilterParam(nameof(User.Country), country, SqlDbType.NVarChar)
+                 );
+
+                var paging = _adoCommand.CreatePaging(page, pageSize);
+
+                command.CommandText = $"SELECT * FROM  [{nameof(User)}] {filter} {paging}";
+                using var reader = await command.ExecuteReaderAsync();
+
+                while (await reader.ReadAsync())
+                {
+                    users.Add(MapUserFromReader(reader));
+                }
+            });
 
             return users;
         }
 
         public async Task Update(User user)
         {
-            using var connection = await _sqlFactory.GetConnection();
-            using var command = connection.CreateCommand();
-            command.CommandText = @$"UPDATE [{nameof(User)}]
+            await _adoCommand.Execute(async (command) =>
+            {
+                command.CommandText = @$"UPDATE [{nameof(User)}]
                SET {nameof(User.FirstName)} = @{nameof(User.FirstName)},
                    {nameof(User.LastName)} = @{nameof(User.LastName)},
                    {nameof(User.Age)} = @{nameof(User.Age)},
+                   {nameof(User.Email)} = @{nameof(User.Email)},
                    {nameof(User.Date)} = @{nameof(User.Date)},
                    {nameof(User.Country)} = @{nameof(User.Country)},
                    {nameof(User.Province)} = @{nameof(User.Province)},
                    {nameof(User.City)} = @{nameof(User.City)}
                WHERE {nameof(User.Id)} = @{nameof(User.Id)}";
 
-            AddParamenters(command, user);
-            command.Parameters.Add(_sqlFactory.CreateParam(nameof(user.Id), user.Id, SqlDbType.BigInt));
-            await command.ExecuteNonQueryAsync();
+                AddParamenters(command, user);
+                command.Parameters.Add(_adoCommand.CreateParam(nameof(user.Id), user.Id, SqlDbType.BigInt));
+                await command.ExecuteNonQueryAsync();
+            });
         }
 
         private void AddParamenters(SqlCommand command, User user)
         {
-            command.Parameters.Add(_sqlFactory.CreateParam(nameof(user.FirstName), user.FirstName, SqlDbType.NVarChar));
-            command.Parameters.Add(_sqlFactory.CreateParam(nameof(user.LastName), user.LastName, SqlDbType.NVarChar));
-            command.Parameters.Add(_sqlFactory.CreateParam(nameof(user.Age), user.Age, SqlDbType.TinyInt));
-            command.Parameters.Add(_sqlFactory.CreateParam(nameof(user.Date), user.Date, SqlDbType.DateTime));
-            command.Parameters.Add(_sqlFactory.CreateParam(nameof(user.Country), user.Country, SqlDbType.NVarChar));
-            command.Parameters.Add(_sqlFactory.CreateParam(nameof(user.Province), user.Province, SqlDbType.NVarChar));
-            command.Parameters.Add(_sqlFactory.CreateParam(nameof(user.City), user.City, SqlDbType.NVarChar));
+            command.Parameters.Add(_adoCommand.CreateParam(nameof(user.FirstName), user.FirstName, SqlDbType.NVarChar));
+            command.Parameters.Add(_adoCommand.CreateParam(nameof(user.LastName), user.LastName, SqlDbType.NVarChar));
+            command.Parameters.Add(_adoCommand.CreateParam(nameof(user.Email), user.Email, SqlDbType.NVarChar));
+            command.Parameters.Add(_adoCommand.CreateParam(nameof(user.Age), user.Age, SqlDbType.TinyInt));
+            command.Parameters.Add(_adoCommand.CreateParam(nameof(user.Date), user.Date, SqlDbType.DateTime));
+            command.Parameters.Add(_adoCommand.CreateParam(nameof(user.Country), user.Country, SqlDbType.NVarChar));
+            command.Parameters.Add(_adoCommand.CreateParam(nameof(user.Province), user.Province, SqlDbType.NVarChar));
+            command.Parameters.Add(_adoCommand.CreateParam(nameof(user.City), user.City, SqlDbType.NVarChar));
         }
 
         private User MapUserFromReader(SqlDataReader reader)
@@ -234,6 +234,7 @@ namespace InterviewTest.Data
                 Id = reader.GetInt64(nameof(User.Id)),
                 FirstName = reader.GetString(nameof(User.FirstName)),
                 LastName = reader.GetString(nameof(User.LastName)),
+                Email = reader.GetString(nameof(User.Email)),
                 Age = reader.GetByte(nameof(User.Age)),
                 Date = reader.GetDateTime(nameof(User.Date)),
                 Country = reader.GetString(nameof(User.Country)),

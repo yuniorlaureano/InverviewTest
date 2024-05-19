@@ -1,39 +1,31 @@
 using AutoFixture;
-using AutoMapper;
 using InterviewTest.Common.Dto;
-using InterviewTest.Service;
+using InterviewTest.Test.Fixtures;
 using InterviewTest.Test.Util;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace InterviewTest.Test
 {
+    [Collection(nameof(UserServiceTestCollection))]
     public class UserServiceTest
     {
-        private readonly IServiceProvider _services;
-        private readonly IFixture _fixture;
-        private readonly IUserService _userService;
-        private readonly IMapper _mapper;
+        private readonly UserServiceTestFixture _userServiceTestFixture;
 
-        public UserServiceTest()
+        public UserServiceTest(UserServiceTestFixture userServiceTestFixture)
         {
-            Thread.CurrentThread.CurrentUICulture = new System.Globalization.CultureInfo("en-US");
-            _services = DependencyBuilder.GetServices();
-            _fixture = new Fixture();
-            _userService = _services.GetRequiredService<IUserService>();
-            _mapper = _services.GetRequiredService<IMapper>();
+            _userServiceTestFixture = userServiceTestFixture;
         }
 
         [Fact]
         public async Task Should_Get_User_By_Id()
         {
-            var user = _fixture
+            var user = _userServiceTestFixture.Fixture
                 .Build<UserCreationDto>()
                 .Create();
 
-            await _userService.Add(user);
+            await _userServiceTestFixture.UserService.Add(user);
 
-            var insertedId = (await _userService.Get()).FirstOrDefault()?.Id;
-            var insertedUser = await _userService.Get(insertedId ?? 0);
+            var insertedId = (await _userServiceTestFixture.UserService.Get()).FirstOrDefault()?.Id;
+            var insertedUser = await _userServiceTestFixture.UserService.GetById(insertedId ?? 0);
 
             Assert.NotNull(insertedUser);
         }
@@ -41,13 +33,13 @@ namespace InterviewTest.Test
         [Fact]
         public async Task Should_Get_Users()
         {
-            var user = _fixture
+            var user = _userServiceTestFixture.Fixture
                 .Build<UserCreationDto>()
                 .Create();
 
-            await _userService.Add(user);
+            await _userServiceTestFixture.UserService.Add(user);
 
-            var insertedUsers = await _userService.Get();
+            var insertedUsers = await _userServiceTestFixture.UserService.Get();
 
             Assert.NotNull(insertedUsers);
         }
@@ -55,13 +47,13 @@ namespace InterviewTest.Test
         [Fact]
         public async Task Should_Get_User_By_Country()
         {
-            var user = _fixture
+            var user = _userServiceTestFixture.Fixture
                 .Build<UserCreationDto>()
                 .Create();
 
-            await _userService.Add(user);
+            await _userServiceTestFixture.UserService.Add(user);
 
-            var insertedUsers = await _userService.Get(country: user.Country);
+            var insertedUsers = await _userServiceTestFixture.UserService.Get(country: user.Country);
 
             Assert.NotNull(insertedUsers);
         }
@@ -69,27 +61,41 @@ namespace InterviewTest.Test
         [Fact]
         public async Task Should_Get_User_By_Age()
         {
-            var user = _fixture
+            var user = _userServiceTestFixture.Fixture
                 .Build<UserCreationDto>()
                 .Create();
 
-            await _userService.Add(user);
+            await _userServiceTestFixture.UserService.Add(user);
 
-            var insertedUsers = await _userService.Get(age: user.Age);
+            var insertedUsers = await _userServiceTestFixture.UserService.Get(age: user.Age);
 
             Assert.NotNull(insertedUsers);
         }
 
         [Fact]
-        public async Task Should_Get_User_By_Age_And_Country()
+        public async Task Should_Get_User_By_Email()
         {
-            var user = _fixture
+            var user = _userServiceTestFixture.Fixture
                 .Build<UserCreationDto>()
                 .Create();
 
-            await _userService.Add(user);
+            await _userServiceTestFixture.UserService.Add(user);
 
-            var insertedUsers = await _userService.Get(age: user.Age, country: user.Country);
+            var existingUser = await _userServiceTestFixture.UserService.GetByEmail(user.Email);
+
+            Assert.NotNull(existingUser);
+        }
+
+        [Fact]
+        public async Task Should_Get_User_By_Age_And_Country()
+        {
+            var user = _userServiceTestFixture.Fixture
+                .Build<UserCreationDto>()
+                .Create();
+
+            await _userServiceTestFixture.UserService.Add(user);
+
+            var insertedUsers = await _userServiceTestFixture.UserService.Get(age: user.Age, country: user.Country);
 
             Assert.NotNull(insertedUsers);
         }
@@ -97,12 +103,12 @@ namespace InterviewTest.Test
         [Fact]
         public async Task Should_Create_User()
         {
-            var user = _fixture
+            var user = _userServiceTestFixture.Fixture
                 .Build<UserCreationDto>()
                 .Create();
 
-            await _userService.Add(user);
-            var insertedUser = await _userService.Get(country: user.Country);
+            await _userServiceTestFixture.UserService.Add(user);
+            var insertedUser = await _userServiceTestFixture.UserService.Get(country: user.Country);
 
             Assert.NotNull(insertedUser);
             Assert.Equal(insertedUser.First().Country, user.Country);
@@ -119,35 +125,35 @@ namespace InterviewTest.Test
                 {
                     new CustomDateTimeConverter("yyyy/MM/dd")
                 }
-               
-            });
-            
 
-            await _userService.Add(users!);
-            var insertedUsers = await _userService.Get();
+            });
+
+
+            await _userServiceTestFixture.UserService.Add(users!);
+            var insertedUsers = await _userServiceTestFixture.UserService.Get(pageSize: 1000);
 
             Assert.NotNull(insertedUsers);
-            Assert.True(insertedUsers.Count() >= 1000);
+            Assert.True(insertedUsers.Count() == 1000);
         }
 
         [Fact]
         public async Task Should_Update_User()
         {
-            var user = _fixture
+            var user = _userServiceTestFixture.Fixture
                 .Build<UserCreationDto>()
                 .Create();
 
-            await _userService.Add(user);
-            
-            var insertedUsers = await _userService.Get(country: user.Country);
+            await _userServiceTestFixture.UserService.Add(user);
+
+            var insertedUsers = await _userServiceTestFixture.UserService.Get(country: user.Country);
             var insertedUser = insertedUsers.First();
 
-            var userToUpdate = _mapper.Map<UserUpdateDto>(insertedUser);
-            
-            userToUpdate.Country = Guid.NewGuid().ToString(); 
-            await _userService.Update(userToUpdate);
+            var userToUpdate = _userServiceTestFixture.Mapper.Map<UserUpdateDto>(insertedUser);
 
-            var updatedUser = await _userService.Get(userToUpdate.Id);
+            userToUpdate.Country = Guid.NewGuid().ToString();
+            await _userServiceTestFixture.UserService.Update(userToUpdate);
+
+            var updatedUser = await _userServiceTestFixture.UserService.GetById(userToUpdate.Id);
 
             Assert.NotNull(updatedUser);
             Assert.Equal(updatedUser.Country, userToUpdate.Country);
@@ -156,21 +162,37 @@ namespace InterviewTest.Test
         [Fact]
         public async Task Should_Delete_User()
         {
-            var user = _fixture
+            var user = _userServiceTestFixture.Fixture
                 .Build<UserCreationDto>()
                 .Create();
 
-            await _userService.Add(user);
+            await _userServiceTestFixture.UserService.Add(user);
 
-            var insertedUsers = await _userService.Get(country: user.Country);
+            var insertedUsers = await _userServiceTestFixture.UserService.Get(country: user.Country);
             var insertedUser = insertedUsers.First();
 
-            var beforeRemove = await _userService.Get(insertedUser.Id);
-            await _userService.Delete(insertedUser.Id);
-            var afterRemove = await _userService.Get(insertedUser.Id);
+            var beforeRemove = await _userServiceTestFixture.UserService.GetById(insertedUser.Id);
+            await _userServiceTestFixture.UserService.Delete(insertedUser.Id);
+            var afterRemove = await _userServiceTestFixture.UserService.GetById(insertedUser.Id);
 
             Assert.NotNull(beforeRemove);
             Assert.Null(afterRemove);
+        }
+
+        [Fact]
+        public async Task Should_Paginate_To_5_Users()
+        {
+            var users = Enumerable.Range(1, 10).Select(x =>
+                _userServiceTestFixture.Fixture
+                 .Build<UserCreationDto>()
+                 .Create());
+
+            await _userServiceTestFixture.UserService.Add(users!);
+
+            var insertedUsers = await _userServiceTestFixture.UserService.Get(pageSize: 5);
+
+            Assert.NotNull(insertedUsers);
+            Assert.True(insertedUsers.Count() == 5);
         }
     }
 }

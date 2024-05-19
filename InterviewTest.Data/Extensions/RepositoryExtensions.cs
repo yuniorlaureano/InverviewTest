@@ -8,6 +8,7 @@ namespace InterviewTest.Data.Extensions
         {
             services.AddScoped<ISqlFactory, SqlFactory>();
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IADOCommand, ADOCommand>();
             return services;
         }
     }
