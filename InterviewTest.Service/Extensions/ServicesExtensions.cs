@@ -14,6 +14,8 @@ namespace InterviewTest.Service.Extensions
         public static IServiceCollection AddServices(this IServiceCollection services)
         {
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IProductService, ProductService>();
+            services.AddScoped<IStockService, StockService>();
             return services;
         }
 
@@ -21,7 +23,15 @@ namespace InterviewTest.Service.Extensions
         {
             services.AddScoped<IValidator<UserCreationDto>, UserCreationValidator>();
             services.AddScoped<IValidator<UserUpdateDto>, UserUpdateValidator>();
+
             services.AddScoped<IValidator<UserLoginDto>, UserLoginValidator>();
+
+            services.AddScoped<IValidator<ProductCreationDto>, ProductCreationValidator>();
+            services.AddScoped<IValidator<ProductUpdateDto>, ProductUpdateValidator>();
+
+            services.AddScoped<IValidator<StockCreationDto>, StockCreationValidator>();
+            services.AddScoped<IValidator<StockUpdateDto>, StockUpdateValidator>();
+
             services.AddScoped<IJwtService, JwtService>();
             return services;
         }

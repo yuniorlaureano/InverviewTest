@@ -3,17 +3,19 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34525.116
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InterviewTest.Service", "InterviewTest.Service\InterviewTest.Service.csproj", "{689B551E-C15D-44E8-91F8-E80CE5729FF6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InterviewTest.Service", "InterviewTest.Service\InterviewTest.Service.csproj", "{689B551E-C15D-44E8-91F8-E80CE5729FF6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InterviewTest.Data", "InterviewTest.Data\InterviewTest.Data.csproj", "{44EC300E-C561-4993-9BF1-2DA975E994F1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InterviewTest.Data", "InterviewTest.Data\InterviewTest.Data.csproj", "{44EC300E-C561-4993-9BF1-2DA975E994F1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InterviewTest.Entity", "InterviewTest.Entity\InterviewTest.Entity.csproj", "{7B2237B3-E6F7-44AB-A781-11E5C8C209A6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InterviewTest.Entity", "InterviewTest.Entity\InterviewTest.Entity.csproj", "{7B2237B3-E6F7-44AB-A781-11E5C8C209A6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InterviewTest.Common", "InterviewTest.Common\InterviewTest.Common.csproj", "{B5F7A332-DC6C-41A6-B2B9-5D5F530B0AC6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InterviewTest.Common", "InterviewTest.Common\InterviewTest.Common.csproj", "{B5F7A332-DC6C-41A6-B2B9-5D5F530B0AC6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InterviewTest.Api", "InterviewTest.Api\InterviewTest.Api.csproj", "{AC628465-DC2A-41C1-8171-8365F17D8EC5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InterviewTest.Api", "InterviewTest.Api\InterviewTest.Api.csproj", "{AC628465-DC2A-41C1-8171-8365F17D8EC5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InterviewTest.Test", "InterviewTest.Test\InterviewTest.Test.csproj", "{408F134E-DEBE-4438-A4B8-3EE973EBF296}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InterviewTest.Test", "InterviewTest.Test\InterviewTest.Test.csproj", "{408F134E-DEBE-4438-A4B8-3EE973EBF296}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InterviewTest.Migrations", "InterviewTest.Migrations\InterviewTest.Migrations.csproj", "{1AA9C2AB-0AD8-4F84-86A2-B742B70E193B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,10 @@ Global
 		{408F134E-DEBE-4438-A4B8-3EE973EBF296}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{408F134E-DEBE-4438-A4B8-3EE973EBF296}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{408F134E-DEBE-4438-A4B8-3EE973EBF296}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1AA9C2AB-0AD8-4F84-86A2-B742B70E193B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1AA9C2AB-0AD8-4F84-86A2-B742B70E193B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1AA9C2AB-0AD8-4F84-86A2-B742B70E193B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1AA9C2AB-0AD8-4F84-86A2-B742B70E193B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

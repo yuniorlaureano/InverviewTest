@@ -10,6 +10,9 @@ namespace InterviewTest.Service.Extensions
             services.AddAutoMapper(config =>
             {
                 config.AddMaps(typeof(UserMapping));
+                config.AddMaps(typeof(ProductMapping));
+                config.AddMaps(typeof(StockDetailMapping));
+                config.AddMaps(typeof(StockMapping));
             });
 
             return services;

@@ -51,7 +51,7 @@ namespace InterviewTest.Data
 
         public async Task Add(IEnumerable<User> user)
         {
-            await _adoCommand.ExecuteTransaction(async (command) =>
+            await _adoCommand.ExecuteTransaction(async (command, onQuery) =>
             {
                 command.CommandText = @$"INSERT INTO [{nameof(User)}]
                 {_adoCommand.GenerateInsertColumnsBody(
@@ -96,7 +96,7 @@ namespace InterviewTest.Data
                     countryParameter.Value = item.Country;
                     proviceParameter.Value = item.Province;
                     cityParameter.Value = item.City;
-
+                    onQuery();
                     await command.ExecuteNonQueryAsync();
                 }
             });

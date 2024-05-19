@@ -1,4 +1,6 @@
 ﻿using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using System.Data;
 using System.Text;
 
@@ -7,32 +9,45 @@ namespace InterviewTest.Data
     public interface IADOCommand
     {
         Task Execute(Func<SqlCommand, Task> executeCommand);
-        Task ExecuteTransaction(Func<SqlCommand, Task> executeCommand);
+        Task ExecuteTransaction(Func<SqlCommand, Action, Task> executeCommand);
         SqlParameter CreateParam<T>(string name, T value, SqlDbType type);
         string CreateFilter(SqlCommand command, params SqlFilterParam[] sqlFilterParams);
+        string CreateInFilter(SqlCommand command, params SqlFilterParam[] sqlFilterParams);
         string CreatePaging(int page = 1, int pageSize = 10);
-
         string GenerateInsertColumnsBody(params string[] fields);
-
         string GenerateUpdateColumnsBody(params string[] fields);
     }
 
     public class ADOCommand : IADOCommand
     {
         public readonly ISqlFactory _sqlFactory;
-        public ADOCommand(ISqlFactory sqlFactory)
+        private readonly ILogger<ADOCommand> _logger;
+        private readonly IHostEnvironment _hostEnvironment;
+
+        public ADOCommand(ISqlFactory sqlFactory, ILogger<ADOCommand> logger, IHostEnvironment hostEnvironment)
         {
             _sqlFactory = sqlFactory;
+            _logger = logger;
+            _hostEnvironment = hostEnvironment;
         }
 
         public async Task Execute(Func<SqlCommand, Task> executeCommand)
         {
-            using var connection = await _sqlFactory.GetConnection();
-            using var command = connection.CreateCommand();
-            await executeCommand(command);
+            try
+            {
+                using var connection = await _sqlFactory.GetConnection();
+                using var command = connection.CreateCommand();
+                await executeCommand(command);
+                LogCommand(command);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error executing sql command");
+                throw;
+            }
         }
 
-        public async Task ExecuteTransaction(Func<SqlCommand, Task> executeCommand)
+        public async Task ExecuteTransaction(Func<SqlCommand, Action, Task> executeCommand)
         {
             using var connection = await _sqlFactory.GetConnection();
             using var transaction = (SqlTransaction)await connection.BeginTransactionAsync();
@@ -42,17 +57,22 @@ namespace InterviewTest.Data
 
             try
             {
-                await executeCommand(command);
+                await executeCommand(command, () =>
+                {
+                    LogCommand(command);
+                });
                 await transaction.CommitAsync();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                _logger.LogError(ex, "Error executing sql transaction");
                 try
                 {
                     await transaction.RollbackAsync();
                 }
                 catch (SqlException)
                 {
+                    _logger.LogError(ex, "Error rolling back sql transaction");
                     throw;
                 }
             }
@@ -88,6 +108,28 @@ namespace InterviewTest.Data
             }
 
             return where.ToString();
+        }
+
+        public string CreateInFilter(SqlCommand command, params SqlFilterParam[] sqlFilterParams)
+        {
+            var filter = new StringBuilder();
+            filter.Append("(");
+            for (int i = 0; i < sqlFilterParams.Length; i++)
+            {
+                if (sqlFilterParams[i].Value is not null)
+                {
+                    filter.Append($"@{sqlFilterParams[i].Param}{i}, ");
+                    command.Parameters.Add(CreateParam($"@{sqlFilterParams[i].Param}{i}", sqlFilterParams[i].Value, sqlFilterParams[i].Type));
+                }
+            }
+
+            if (filter.Length > 0)
+            {
+                filter.Remove(filter.Length - 2, 2);
+            }
+            filter.Append(")");
+
+            return filter.ToString();
         }
 
         public string CreatePaging(int page = 1, int pageSize = 10)
@@ -133,6 +175,20 @@ namespace InterviewTest.Data
             udpate.Append($"{fields[lastFieldIndex]} = @{fields[lastFieldIndex]}");
 
             return udpate.ToString();
+        }
+
+        private void LogCommand(SqlCommand command)
+        {
+            if (_hostEnvironment.IsDevelopment())
+            {
+                var query = command.CommandText;
+                foreach (SqlParameter parameter in command.Parameters)
+                {
+                    query = query.Replace(parameter.ParameterName, parameter.Value?.ToString() ?? "NULL");
+                }
+
+                _logger.LogDebug("Executing SQL Command: {Query}", query);
+            }           
         }
     }
 

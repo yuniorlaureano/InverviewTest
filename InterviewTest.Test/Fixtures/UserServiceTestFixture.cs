@@ -1,5 +1,6 @@
 ﻿using AutoFixture;
 using AutoMapper;
+using InterviewTest.Common.Dto;
 using InterviewTest.Data;
 using InterviewTest.Entity;
 using InterviewTest.Service;
@@ -25,18 +26,24 @@ namespace InterviewTest.Test.Fixtures
             AdoCommand = Services.GetRequiredService<IADOCommand>();
         }
 
+        public async Task<UserCreationDto> MockUser()
+        {
+            var user = Fixture
+                .Build<UserCreationDto>()
+                .Create();
+
+            await UserService.Add(user);
+            return user;
+        }
+
         public Task DisposeAsync()
         {
             return Task.CompletedTask;
         }
 
-        public async Task InitializeAsync()
-        {            
-            await AdoCommand.Execute(async (command) =>
-            {
-                command.CommandText = $"TRUNCATE TABLE [{nameof(User)}]";
-                await command.ExecuteNonQueryAsync();
-            });
+        public Task InitializeAsync()
+        {
+            return Task.CompletedTask;
         }
     }
 
