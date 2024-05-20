@@ -16,6 +16,9 @@ namespace InterviewTest.Service.Extensions
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<IStockService, StockService>();
+            services.AddScoped<ICountryService, CountryService>();
+            services.AddScoped<IProvinceService, ProvinceService>();
+            services.AddScoped<ICityService, CityService>();
             return services;
         }
 
@@ -31,6 +34,15 @@ namespace InterviewTest.Service.Extensions
 
             services.AddScoped<IValidator<StockCreationDto>, StockCreationValidator>();
             services.AddScoped<IValidator<StockUpdateDto>, StockUpdateValidator>();
+
+            services.AddScoped<IValidator<CountryCreationDto>, CountryCreationValidator>();
+            services.AddScoped<IValidator<CountryUpdateDto>, CountryUpdateValidator>();
+
+            services.AddScoped<IValidator<ProvinceCreationDto>, ProvinceCreationValidator>();
+            services.AddScoped<IValidator<ProvinceUpdateDto>, ProvinceUpdateValidator>();
+
+            services.AddScoped<IValidator<CityCreationDto>, CityCreationValidator>();
+            services.AddScoped<IValidator<CityUpdateDto>, CityUpdateValidator>();
 
             services.AddScoped<IJwtService, JwtService>();
             return services;

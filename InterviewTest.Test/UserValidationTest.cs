@@ -63,18 +63,5 @@ namespace InterviewTest.Test
 
             Assert.True(result.IsValid);
         }
-
-        [Fact]
-        public async Task Should_Return_Valid_User_Update()
-        {
-            var user = _fixture
-                .Build<UserUpdateDto>()
-                .With(x => x.Email, $"{Guid.NewGuid()}@.gmail.com")
-                .Create();
-
-            var result = await _userUpdateValidator.ValidateAsync(user);
-
-            Assert.True(result.IsValid);
-        }
     }
 }

@@ -35,7 +35,7 @@ namespace InterviewTest.Data
                     new SqlFilterParam("C.[Name]", country, SqlDbType.NVarChar, "Country")
                  );
 
-                var paging = _adoCommand.CreatePaging(page, pageSize, orderBy: "C.Id");
+                var paging = _adoCommand.CreatePaging(page, pageSize, orderBy: "USR.[Id]");
 
                 command.CommandText = @$"
                         SELECT 

@@ -13,6 +13,9 @@ namespace InterviewTest.Service.Extensions
                 config.AddMaps(typeof(ProductMapping));
                 config.AddMaps(typeof(StockDetailMapping));
                 config.AddMaps(typeof(StockMapping));
+                config.AddMaps(typeof(CountryMapping));
+                config.AddMaps(typeof(ProvinceMapping));
+                config.AddMaps(typeof(CityMapping));
             });
 
             return services;

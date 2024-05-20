@@ -27,7 +27,13 @@ namespace InterviewTest.Service.Validators
                 .MustAsync(async (email, token) =>
                 {
                     return (await userService.GetByEmail(email)) is null;
-                });
+                }).WithMessage("The email already exists");
+
+            RuleFor(x => x.Id)
+                .MustAsync(async (id, token) =>
+                {
+                    return (await userService.GetById(id)) is not null;
+                }).WithMessage("The user does not exist");
 
             RuleFor(x => x.Age).Must((age) => age > 0 && age <= byte.MaxValue)
                 .WithMessage($"Must provide an age between 1 and {byte.MaxValue}");

@@ -27,7 +27,7 @@ namespace InterviewTest.Service.Validators
                 .MustAsync(async (email,token) =>
                 {
                     return (await userService.GetByEmail(email)) is null;
-                });
+                }).WithMessage("The email already exists");
 
             RuleFor(x => x.Password)
                 .NotNull()

@@ -15,6 +15,10 @@ namespace InterviewTest.Data.Extensions
 
             services.AddScoped<IUserRepository, UserRepository>();
 
+            services.AddScoped<ICountryRepository, CountryRepository>();
+            services.AddScoped<IProvinceRepository, ProvinceRepository>();
+            services.AddScoped<ICityRepository, CityRepository>();
+
             return services;
         }
     }
