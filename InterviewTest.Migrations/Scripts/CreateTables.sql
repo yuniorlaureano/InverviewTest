@@ -58,3 +58,38 @@ CREATE TABLE [StockDetail] (
 )
 GO
 
+CREATE TABLE [User1] (
+	Id bigint not null identity,
+    FirstName nvarchar(50) not null,
+    LastName nvarchar(50) not null,
+    Email nvarchar(50) not null,
+    [Password] nvarchar(256) null,
+    Age tinyint not null,
+    [Date] DateTime,
+
+    CountryId bigint,
+    ProvinceId bigint,
+    CityId bigint
+)
+GO
+CREATE TABLE Country (
+	Id bigint primary key identity,
+	[Name] nvarchar(50),
+)
+GO
+CREATE TABLE Province (
+	Id bigint primary key identity,
+	[Name] nvarchar(50),
+	CountryId bigint not null
+
+	CONSTRAINT FK_Province_Country_CountryId FOREIGN KEY(CountryId) REFERENCES Country(Id)
+)
+GO
+CREATE TABLE City (
+	Id bigint primary key identity,
+	[Name] nvarchar(50),
+	ProvinceId bigint not null,
+
+	CONSTRAINT FK_City_Province_ProvinceId FOREIGN KEY(ProvinceId) REFERENCES Province(Id)
+)
+GO
