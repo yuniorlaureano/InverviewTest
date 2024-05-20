@@ -14,10 +14,6 @@ a console application which can be run independently.
 ### Seeding databse
 > After creating the databse and configure the project, the tests in **InterviewTest.Test** cam be run, and the databse will be seeded with 
 test data. 
->The test for the **the test method: Should_Create_1000_Users, inside the test class InterviewTest.Test.UserServiceTest**, should be 
-run only once, since it is running a bulk insert of 1000 users and the emails might conflict if run several times.
-The migration can be run several times, it cleans up the databse each time it runs, the test can be run after each migration run
-without any conflict in data insertion
 
 ## Project Organization
 - InterviewTest.Api
