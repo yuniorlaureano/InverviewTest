@@ -5,7 +5,7 @@ namespace InterviewTest.Service.Validators
 {
     public class UserCreationValidator : AbstractValidator<UserCreationDto>
     {
-        public UserCreationValidator()
+        public UserCreationValidator(IUserService userService)
         {
             RuleFor(x => x.FirstName)
                 .NotNull()
@@ -13,6 +13,23 @@ namespace InterviewTest.Service.Validators
                 .MaximumLength(50);
 
             RuleFor(x => x.LastName)
+                .NotNull()
+                .NotEmpty()
+                .MaximumLength(50);
+
+            RuleFor(x => x.Email)
+                .NotNull()
+                .NotEmpty()
+                .EmailAddress()
+                .MaximumLength(50);
+
+            RuleFor(x => x.Email)
+                .MustAsync(async (email,token) =>
+                {
+                    return (await userService.GetByEmail(email)) is null;
+                });
+
+            RuleFor(x => x.Password)
                 .NotNull()
                 .NotEmpty()
                 .MaximumLength(50);

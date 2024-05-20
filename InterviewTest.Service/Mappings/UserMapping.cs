@@ -8,9 +8,9 @@ namespace InterviewTest.Service.Mappings
     {
         public UserMapping()
         {
-            CreateMap<UserCreationDto, User>();
-            CreateMap<UserUpdateDto, User>();
-            CreateMap<User, UserListDto>();
+            CreateMap<UserCreationDto, TemporalUser>();
+            CreateMap<UserUpdateDto, TemporalUser>();
+            CreateMap<TemporalUser, UserListDto>();
             CreateMap<UserListDto, UserUpdateDto>();
         }
     }

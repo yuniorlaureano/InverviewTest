@@ -29,7 +29,7 @@ namespace InterviewTest.Test
             var result = await _loginValidator.ValidateAsync(credentials);
 
             Assert.False(result.IsValid);
-            Assert.Equal(result.Errors[0].PropertyName, nameof(UserLoginDto.Email));
+            Assert.Equal(nameof(UserLoginDto.Email), result.Errors[0].PropertyName);
         }
 
         [Fact]

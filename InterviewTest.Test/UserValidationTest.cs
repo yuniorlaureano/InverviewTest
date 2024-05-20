@@ -56,6 +56,7 @@ namespace InterviewTest.Test
         {
             var user = _fixture
                 .Build<UserCreationDto>()
+                .With(x => x.Email, $"{Guid.NewGuid()}@.gmail.com")
                 .Create();
 
             var result = await _userCreationValidator.ValidateAsync(user);
@@ -68,6 +69,7 @@ namespace InterviewTest.Test
         {
             var user = _fixture
                 .Build<UserUpdateDto>()
+                .With(x => x.Email, $"{Guid.NewGuid()}@.gmail.com")
                 .Create();
 
             var result = await _userUpdateValidator.ValidateAsync(user);

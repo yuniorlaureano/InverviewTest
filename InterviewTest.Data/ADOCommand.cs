@@ -11,7 +11,7 @@ namespace InterviewTest.Data
         Task Execute(Func<SqlCommand, Task> executeCommand);
         Task ExecuteTransaction(Func<SqlCommand, Action, Task> executeCommand);
         SqlParameter CreateParam<T>(string name, T value, SqlDbType type);
-        string CreateFilter1(SqlCommand command, params SqlFilterParam[] sqlFilterParams);
+        string CreateFilterWithCustomParameter(SqlCommand command, params SqlFilterParam[] sqlFilterParams);
         string CreateFilter(SqlCommand command, params SqlFilterParam[] sqlFilterParams);
         string CreateInFilter(SqlCommand command, params SqlFilterParam[] sqlFilterParams);
         string CreatePaging(int page = 1, int pageSize = 10, string orderBy = "Id");
@@ -111,7 +111,7 @@ namespace InterviewTest.Data
             return where.ToString();
         }
 
-        public string CreateFilter1(SqlCommand command, params SqlFilterParam[] sqlFilterParams)
+        public string CreateFilterWithCustomParameter(SqlCommand command, params SqlFilterParam[] sqlFilterParams)
         {
             var where = new StringBuilder();
             foreach (var sqlFilterParam in sqlFilterParams)

@@ -13,7 +13,7 @@ namespace InterviewTest.Data.Extensions
             services.AddScoped<IStockDetailRepository, StockDetailRepository>();
             services.AddScoped<IADOCommand, ADOCommand>();
 
-            services.AddScoped<IUserTRepository, UserTRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
 
             return services;
         }

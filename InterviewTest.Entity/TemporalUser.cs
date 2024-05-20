@@ -1,6 +1,6 @@
 ﻿namespace InterviewTest.Entity
 {
-    public class User1
+    public class TemporalUser
     {
         public long Id { get; set; }
         public string FirstName { get; set; }
@@ -9,8 +9,8 @@
         public string Password { get; set; }
         public byte Age { get; set; }
         public DateTime Date { get; set; }
-        public long CountryId { get; set; }
-        public long ProvinceId { get; set; }
-        public long CityId { get; set; }
+        public string Country { get; set; }
+        public string Province { get; set; }
+        public string City { get; set; }
     }
 }

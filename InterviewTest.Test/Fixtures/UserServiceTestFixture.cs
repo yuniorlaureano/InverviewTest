@@ -18,7 +18,6 @@ namespace InterviewTest.Test.Fixtures
 
         public UserServiceTestFixture()
         {
-            Thread.CurrentThread.CurrentUICulture = new System.Globalization.CultureInfo("en-US");
             Services = DependencyBuilder.GetServices();
             Fixture = new Fixture();
             UserService = Services.GetRequiredService<IUserService>();

@@ -30,14 +30,14 @@ namespace InterviewTest.Service
 
         public async Task Add(UserCreationDto userDto)
         {
-            var user = _mapper.Map<User>(userDto);
+            var user = _mapper.Map<TemporalUser>(userDto);
             user.Password = PasswordHasher.HashPassword(userDto.Password);
             await _userRepository.Add(user);
         }
 
         public async Task Add(IEnumerable<UserCreationDto> userDtos)
         {
-            var users = _mapper.Map<IEnumerable<User>>(userDtos);
+            var users = _mapper.Map<IEnumerable<TemporalUser>>(userDtos);
             await _userRepository.Add(users);
         }
 
@@ -66,7 +66,7 @@ namespace InterviewTest.Service
 
         public async Task Update(UserUpdateDto userDtos)
         {
-            var user = _mapper.Map<User>(userDtos);
+            var user = _mapper.Map<TemporalUser>(userDtos);
             await _userRepository.Update(user);
         }
     }
