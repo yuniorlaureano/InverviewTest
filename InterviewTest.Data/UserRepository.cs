@@ -245,7 +245,7 @@ namespace InterviewTest.Data
                     )
                 ";
 
-                await command.ExecuteNonQueryAsync();  
+                await command.ExecuteNonQueryAsync();
             });
         }
 

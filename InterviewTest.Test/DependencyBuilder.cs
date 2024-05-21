@@ -11,17 +11,19 @@ namespace InterviewTest.Test
 {
     internal class DependencyBuilder
     {
-        public static IServiceProvider GetServices()
+        public static IServiceProvider GetServices(Action<ServiceCollection>? func = null)
         {
             var services = new ServiceCollection();
 
             services.AddSingleton<IConfiguration>(GddConfigration());
 
-
-            services.AddRepositories();
-            services.AddServices();
-            services.AddMappings();
-            services.AddValidators();
+            if (func == null)
+            {
+                services.AddRepositories();
+                services.AddServices();
+                services.AddMappings();
+                services.AddValidators();
+            }
 
             var mockLogger = new Mock<ILogger<ADOCommand>>();
             services.AddSingleton<ILogger<ADOCommand>>(mockLogger.Object);
@@ -29,6 +31,7 @@ namespace InterviewTest.Test
             var mockHostEnv = new Mock<IHostEnvironment>();
             services.AddSingleton<IHostEnvironment>(mockHostEnv.Object);
 
+            func?.Invoke(services);
 
             return services.BuildServiceProvider();
         }

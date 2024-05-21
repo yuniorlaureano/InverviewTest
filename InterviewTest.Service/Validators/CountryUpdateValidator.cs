@@ -14,7 +14,7 @@ namespace InterviewTest.Service.Validators
 
             RuleFor(x => x.Id)
                 .NotNull()
-                .MustAsync(async(id,token) =>
+                .MustAsync(async (id, token) =>
                 {
                     return (await countryService.GetById(id)) is not null;
                 }).WithMessage("The country does not exist");

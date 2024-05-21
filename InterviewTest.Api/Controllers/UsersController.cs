@@ -16,7 +16,7 @@ namespace InterviewTest.Api.Controllers
         private readonly IValidator<UserUpdateDto> _userUpdateValidator;
 
         public UsersController(
-            IUserService userService, 
+            IUserService userService,
             IValidator<UserCreationDto> userCreationValidator,
             IValidator<UserUpdateDto> userUpdateValidator
             )
@@ -37,7 +37,7 @@ namespace InterviewTest.Api.Controllers
         [HttpGet()]
         [Produces(typeof(IEnumerable<UserListDto>))]
         public async Task<IEnumerable<UserListDto>> Get(
-            [FromQuery]int page = 1,
+            [FromQuery] int page = 1,
             [FromQuery] int pageSize = 10,
             [FromQuery] byte? age = null,
             [FromQuery] string? country = null)
@@ -58,7 +58,7 @@ namespace InterviewTest.Api.Controllers
                         status: 400,
                         title: "Error while creating user",
                         detail: "Error while creating user",
-                        instance: HttpContext.Request.Path
+                        instance: HttpContext?.Request?.Path
                     );
             }
 
@@ -80,7 +80,7 @@ namespace InterviewTest.Api.Controllers
                             status: 400,
                             title: "Error while creating users",
                             detail: "Error while creating users",
-                            instance: HttpContext.Request.Path
+                            instance: HttpContext?.Request?.Path
                         );
                 }
             }
@@ -101,7 +101,7 @@ namespace InterviewTest.Api.Controllers
                         status: 400,
                         title: "Error while updating user",
                         detail: "Error while updating user",
-                        instance: HttpContext.Request.Path
+                        instance: HttpContext?.Request?.Path
                     );
             }
 
@@ -113,6 +113,12 @@ namespace InterviewTest.Api.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> Delete(long id)
         {
+            var user = await _userService.GetById(id);
+            if (user is null)
+            {
+                return NotFound();
+            }
+
             await _userService.Delete(id);
             return NoContent();
         }

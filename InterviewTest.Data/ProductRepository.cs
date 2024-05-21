@@ -80,7 +80,7 @@ namespace InterviewTest.Data
 
             await _adoCommand.Execute(async (command) =>
             {
-                var inFilter = _adoCommand.CreateInFilter(command, 
+                var inFilter = _adoCommand.CreateInFilter(command,
                     ids.Select(id => new SqlFilterParam(nameof(Product.Id), id, SqlDbType.BigInt)).ToArray()
                 );
 

@@ -211,7 +211,7 @@ namespace InterviewTest.Data
                 }
 
                 _logger.LogDebug("Executing SQL Command: {Query}", query);
-            }           
+            }
         }
     }
 

@@ -4,7 +4,7 @@ using InterviewTest.Common.Dto;
 using InterviewTest.Service;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace InterviewTest.Test
+namespace InterviewTest.Test.Tests.Service
 {
     public class CountryServiceTest
     {

@@ -3,7 +3,7 @@ using FluentValidation;
 using InterviewTest.Common.Dto;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace InterviewTest.Test
+namespace InterviewTest.Test.Tests.Validation
 {
     public class SecurityValidationTest
     {

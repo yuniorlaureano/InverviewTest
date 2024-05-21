@@ -13,9 +13,9 @@ namespace InterviewTest.Api.Util
     public static class ResultsExtensions
     {
         public static IActionResult FluentValidationProblem(
-            this ValidationResult validationResult, 
-            int status = 400, 
-            string? title = null, 
+            this ValidationResult validationResult,
+            int status = 400,
+            string? title = null,
             string? detail = null,
             string? instance = null)
         {
@@ -49,7 +49,7 @@ namespace InterviewTest.Api.Util
             string? instance = null
             )
         {
-            
+
             return new ObjectResult(new ErrorResult(
                     Errors: errors,
                     Title: title,

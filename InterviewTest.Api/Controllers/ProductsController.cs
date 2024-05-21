@@ -16,7 +16,7 @@ namespace InterviewTest.Api.Controllers
         private readonly IValidator<ProductUpdateDto> _productUpdateValidator;
 
         public ProductsController(
-            IProductService productService, 
+            IProductService productService,
             IValidator<ProductCreationDto> productCreationValidator,
             IValidator<ProductUpdateDto> productUpdateValidator
             )
@@ -37,7 +37,7 @@ namespace InterviewTest.Api.Controllers
         [HttpGet()]
         [Produces(typeof(IEnumerable<ProductListDto>))]
         public async Task<IEnumerable<ProductListDto>> Get(
-            [FromQuery]int page = 1,
+            [FromQuery] int page = 1,
             [FromQuery] int pageSize = 10,
             [FromQuery] string? code = null,
             [FromQuery] string? name = null)

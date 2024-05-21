@@ -17,7 +17,7 @@ namespace InterviewTest.Api.Controllers
         private readonly IValidator<StockUpdateDto> _stockUpdateValidator;
 
         public StocksController(
-            IStockService stockService, 
+            IStockService stockService,
             IValidator<StockCreationDto> stockCreationValidator,
             IValidator<StockUpdateDto> stockUpdateValidator
             )
@@ -38,7 +38,7 @@ namespace InterviewTest.Api.Controllers
         [HttpGet()]
         [Produces(typeof(IEnumerable<StockListDto>))]
         public async Task<IEnumerable<StockListDto>> Get(
-            [FromQuery]int page = 1,
+            [FromQuery] int page = 1,
             [FromQuery] int pageSize = 10,
             TransactionType? transactionType = null,
             string? description = null)

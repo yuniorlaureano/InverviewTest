@@ -2,7 +2,7 @@ using AutoFixture;
 using InterviewTest.Common.Dto;
 using InterviewTest.Test.Fixtures;
 
-namespace InterviewTest.Test
+namespace InterviewTest.Test.Tests.Service
 {
     [Collection(nameof(InventoryServiceTestCollection))]
     public class StockServiceTest
@@ -24,7 +24,7 @@ namespace InterviewTest.Test
 
             var insertedStocks = await _inventoryServiceTestFixture.StockService.Get(description: Stock.Description);
             var insertedStock = await _inventoryServiceTestFixture.StockService.GetById(insertedStocks.First().Id);
-            
+
             Assert.NotNull(insertedStock);
         }
 
@@ -98,7 +98,7 @@ namespace InterviewTest.Test
         {
             var insertedProducts = await _inventoryServiceTestFixture.MockProducts();
 
-            for (int i = 0; i < 7; i++) 
+            for (int i = 0; i < 7; i++)
             {
                 var stock = _inventoryServiceTestFixture.Fixture
                    .Build<StockCreationDto>()
@@ -118,7 +118,7 @@ namespace InterviewTest.Test
                 stock.StockDetailListDtos = stockDetailCreationDtos;
                 await _inventoryServiceTestFixture.StockService.Add(stock);
             }
-            
+
             var insertedStocks = await _inventoryServiceTestFixture.StockService.Get(pageSize: 5);
 
             Assert.Equal(5, insertedStocks.Count());

@@ -16,7 +16,7 @@ namespace InterviewTest.Api.Controllers
         private readonly IValidator<CountryUpdateDto> _CountryUpdateValidator;
 
         public CountriesController(
-            ICountryService CountryService, 
+            ICountryService CountryService,
             IValidator<CountryCreationDto> CountryCreationValidator,
             IValidator<CountryUpdateDto> CountryUpdateValidator
             )
@@ -37,7 +37,7 @@ namespace InterviewTest.Api.Controllers
         [HttpGet()]
         [Produces(typeof(IEnumerable<CountryListDto>))]
         public async Task<IEnumerable<CountryListDto>> Get(
-            [FromQuery]int page = 1,
+            [FromQuery] int page = 1,
             [FromQuery] int pageSize = 10,
             [FromQuery] string? name = null)
         {

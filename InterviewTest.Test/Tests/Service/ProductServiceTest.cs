@@ -2,7 +2,7 @@ using AutoFixture;
 using InterviewTest.Common.Dto;
 using InterviewTest.Test.Fixtures;
 
-namespace InterviewTest.Test
+namespace InterviewTest.Test.Tests.Service
 {
     [Collection(nameof(InventoryServiceTestCollection))]
     public class ProductServiceTest

@@ -2,7 +2,6 @@
 using AutoMapper;
 using InterviewTest.Common.Dto;
 using InterviewTest.Data;
-using InterviewTest.Entity;
 using InterviewTest.Service;
 using Microsoft.Extensions.DependencyInjection;
 

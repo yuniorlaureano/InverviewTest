@@ -14,7 +14,7 @@ namespace InterviewTest.Service.Validators
 
             RuleFor(x => x.Id)
                 .NotNull()
-                .MustAsync(async(id,token) =>
+                .MustAsync(async (id, token) =>
                 {
                     return (await provinceService.GetById(id)) is not null;
                 }).WithMessage("The province does not exist");

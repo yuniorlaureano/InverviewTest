@@ -24,7 +24,7 @@ namespace InterviewTest.Service.Validators
                 .MaximumLength(50);
 
             RuleFor(x => x.Email)
-                .MustAsync(async (email,token) =>
+                .MustAsync(async (email, token) =>
                 {
                     return (await userService.GetByEmail(email)) is null;
                 }).WithMessage("The email already exists");

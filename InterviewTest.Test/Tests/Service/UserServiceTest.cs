@@ -5,7 +5,7 @@ using InterviewTest.Service;
 using InterviewTest.Test.Util;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace InterviewTest.Test
+namespace InterviewTest.Test.Tests.Service
 {
     public class UserServiceTest
     {
@@ -26,7 +26,7 @@ namespace InterviewTest.Test
         [Fact]
         public async Task Should_Create_1000_Users()
         {
-            var data = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "MockData", "users.json"));
+            var data = File.ReadAllText(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "MockData", "users.json"));
             var users = System.Text.Json.JsonSerializer.Deserialize<IEnumerable<UserCreationDto>>(data, new System.Text.Json.JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true,

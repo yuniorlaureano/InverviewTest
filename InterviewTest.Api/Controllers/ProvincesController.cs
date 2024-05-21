@@ -16,7 +16,7 @@ namespace InterviewTest.Api.Controllers
         private readonly IValidator<ProvinceUpdateDto> _provinceUpdateValidator;
 
         public ProvincesController(
-            IProvinceService provinceService, 
+            IProvinceService provinceService,
             IValidator<ProvinceCreationDto> provinceCreationValidator,
             IValidator<ProvinceUpdateDto> provinceUpdateValidator
             )
@@ -37,7 +37,7 @@ namespace InterviewTest.Api.Controllers
         [HttpGet()]
         [Produces(typeof(IEnumerable<ProvinceListDto>))]
         public async Task<IEnumerable<ProvinceListDto>> Get(
-            [FromQuery]int page = 1,
+            [FromQuery] int page = 1,
             [FromQuery] int pageSize = 10,
             [FromQuery] string? name = null,
             [FromQuery] string? country = null)

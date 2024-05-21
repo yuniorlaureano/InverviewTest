@@ -62,12 +62,12 @@ namespace InterviewTest.Service
 
         public async Task<IEnumerable<StockListDto>> Get(
             int page = 1,
-            int pageSize = 10, 
+            int pageSize = 10,
             TransactionType? transactionType = null,
             string? description = null)
         {
             var stocks = await _stockRepository.Get(page, pageSize, transactionType, description);
-            var stocksDto  = _mapper.Map<IEnumerable<StockListDto>>(stocks);
+            var stocksDto = _mapper.Map<IEnumerable<StockListDto>>(stocks);
             foreach (var stock in stocksDto)
             {
                 var stockListDetails = await _stockDetailRepository.GetByStockId(stock.Id);
