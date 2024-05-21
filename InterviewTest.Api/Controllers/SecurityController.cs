@@ -42,7 +42,7 @@ namespace InterviewTest.Api.Controllers
                 return validationResult.FluentValidationProblem(
                         status: 400,
                         title: "Error while login in the user",
-                        instance: HttpContext.Request.Path
+                        instance: HttpContext?.Request?.Path
                     );
             }
 

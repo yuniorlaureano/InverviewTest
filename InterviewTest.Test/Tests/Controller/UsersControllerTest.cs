@@ -94,7 +94,7 @@ namespace InterviewTest.Test.Tests.Controller
                 .Setup(x => x.GetByEmail(It.IsAny<string>()))
                 .ReturnsAsync(() => null);
 
-            var services = DependencyBuilder.GetServices((serviceCollection) =>
+            var services = DependencyBuilder.GetServices((serviceCollection, _) =>
             {
                 serviceCollection.AddScoped<IUserRepository>((_) => userRepository.Object);
                 serviceCollection.AddScoped<IUserService>((_) => userService.Object);
@@ -139,7 +139,7 @@ namespace InterviewTest.Test.Tests.Controller
                 .Setup(x => x.GetByEmail(It.IsAny<string>()))
                 .ReturnsAsync(() => null);
 
-            var services = DependencyBuilder.GetServices((serviceCollection) =>
+            var services = DependencyBuilder.GetServices((serviceCollection, configuration) =>
             {
                 serviceCollection.AddScoped<IUserRepository>((_) => userRepository.Object);
                 serviceCollection.AddScoped<IUserService>((_) => userService.Object);
@@ -193,7 +193,7 @@ namespace InterviewTest.Test.Tests.Controller
                 .Setup(x => x.GetByEmail(It.IsAny<string>()))
                 .ReturnsAsync(() => null);
 
-            var services = DependencyBuilder.GetServices((serviceCollection) =>
+            var services = DependencyBuilder.GetServices((serviceCollection, _) =>
             {
                 serviceCollection.AddScoped<IUserRepository>((_) => userRepository.Object);
                 serviceCollection.AddScoped<IUserService>((_) => userService.Object);
@@ -247,7 +247,7 @@ namespace InterviewTest.Test.Tests.Controller
                 .Setup(x => x.GetByEmail(It.IsAny<string>()))
                 .ReturnsAsync(() => null);
 
-            var services = DependencyBuilder.GetServices((serviceCollection) =>
+            var services = DependencyBuilder.GetServices((serviceCollection, _) =>
             {
                 serviceCollection.AddScoped<IUserRepository>((_) => userRepository.Object);
                 serviceCollection.AddScoped<IUserService>((_) => userService.Object);
@@ -297,7 +297,7 @@ namespace InterviewTest.Test.Tests.Controller
                 .Setup(x => x.GetByEmail(It.IsAny<string>()))
                 .ReturnsAsync(() => null);
 
-            var services = DependencyBuilder.GetServices((serviceCollection) =>
+            var services = DependencyBuilder.GetServices((serviceCollection, _) =>
             {
                 serviceCollection.AddScoped<IUserRepository>((_) => userRepository.Object);
                 serviceCollection.AddScoped<IUserService>((_) => userService.Object);
@@ -356,7 +356,7 @@ namespace InterviewTest.Test.Tests.Controller
                 .Setup(x => x.GetByEmail(It.IsAny<string>()))
                 .ReturnsAsync(() => null);
 
-            var services = DependencyBuilder.GetServices((serviceCollection) =>
+            var services = DependencyBuilder.GetServices((serviceCollection, _) =>
             {
                 serviceCollection.AddScoped<IUserRepository>((_) => userRepository.Object);
                 serviceCollection.AddScoped<IUserService>((_) => userService.Object);
@@ -410,7 +410,7 @@ namespace InterviewTest.Test.Tests.Controller
                 .Setup(x => x.GetById(userUpdate.Id))
                 .ReturnsAsync(() => userList);
 
-            var services = DependencyBuilder.GetServices((serviceCollection) =>
+            var services = DependencyBuilder.GetServices((serviceCollection, _) =>
             {
                 serviceCollection.AddScoped<IUserRepository>((_) => userRepository.Object);
                 serviceCollection.AddScoped<IUserService>((_) => userService.Object);
@@ -456,7 +456,7 @@ namespace InterviewTest.Test.Tests.Controller
                 .Setup(x => x.GetById(It.IsAny<long>()))
                 .ReturnsAsync(() => null);
 
-            var services = DependencyBuilder.GetServices((serviceCollection) =>
+            var services = DependencyBuilder.GetServices((serviceCollection, _) =>
             {
                 serviceCollection.AddScoped<IUserRepository>((_) => userRepository.Object);
                 serviceCollection.AddScoped<IUserService>((_) => userService.Object);
@@ -513,7 +513,7 @@ namespace InterviewTest.Test.Tests.Controller
                 .Setup(x => x.GetById(It.IsAny<long>()))
                 .ReturnsAsync(() => null);
 
-            var services = DependencyBuilder.GetServices((serviceCollection) =>
+            var services = DependencyBuilder.GetServices((serviceCollection, _) =>
             {
                 serviceCollection.AddScoped<IUserRepository>((_) => userRepository.Object);
                 serviceCollection.AddScoped<IUserService>((_) => userService.Object);

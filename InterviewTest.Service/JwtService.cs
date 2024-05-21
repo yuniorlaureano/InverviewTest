@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -10,6 +9,7 @@ namespace InterviewTest.Service
     public interface IJwtService
     {
         string GenerateToken(Claim[] claims);
+        Task<bool> ValidateToken(string token);
     }
 
     public class JwtService : IJwtService
@@ -39,6 +39,24 @@ namespace InterviewTest.Service
 
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
+        }
+
+        public async Task<bool> ValidateToken(string token)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(_jwtOptions.Secret);
+
+            var result = await tokenHandler.ValidateTokenAsync(token, new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateIssuerSigningKey = true,
+                ValidIssuer = _jwtOptions.Issuer,
+                ValidAudience = _jwtOptions.Audience,
+                IssuerSigningKey = new SymmetricSecurityKey(key)
+            });
+
+            return result.IsValid;
         }
     }
 }
