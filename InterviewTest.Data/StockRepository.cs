@@ -248,7 +248,7 @@ namespace InterviewTest.Data
             });
         }
 
-        private void AddParamenters(SqlCommand command, Stock stock)
+        private void AddParamenters(IInterviewTestDataBaseCommand command, Stock stock)
         {
             command.Parameters.Add(_adoCommand.CreateParam(nameof(Stock.TransactionType), (byte)stock.TransactionType, SqlDbType.TinyInt));
             command.Parameters.Add(_adoCommand.CreateParam(nameof(Stock.Description), stock.Description, SqlDbType.NVarChar));

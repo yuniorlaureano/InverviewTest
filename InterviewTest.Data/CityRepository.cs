@@ -106,7 +106,7 @@ namespace InterviewTest.Data
             });
         }
 
-        private void AddParamenters(SqlCommand command, City city)
+        private void AddParamenters(IInterviewTestDataBaseCommand command, City city)
         {
             command.Parameters.Add(_adoCommand.CreateParam(nameof(City.Name), city.Name, SqlDbType.NVarChar));
             command.Parameters.Add(_adoCommand.CreateParam(nameof(City.ProvinceId), city.ProvinceId, SqlDbType.BigInt));

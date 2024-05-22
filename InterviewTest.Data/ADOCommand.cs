@@ -8,14 +8,91 @@ namespace InterviewTest.Data
 {
     public interface IADOCommand
     {
-        Task Execute(Func<SqlCommand, Task> executeCommand);
-        Task ExecuteTransaction(Func<SqlCommand, Action, Task> executeCommand);
+        /// <summary>
+        /// Allow the execution of a command against the database
+        /// Takes care of openning the connection and handling it disposal
+        /// When running in development log the commandText to the configured logger provider
+        /// </summary>
+        /// <param name="executeCommand">
+        ///  Allow to build the command to be executed
+        /// </param>
+        /// <returns></returns>
+        Task Execute(Func<IInterviewTestDataBaseCommand, Task> executeCommand);
+
+        /// <summary>
+        /// Allow the execution of a command against the database using transaction
+        /// Takes care of openning the connection and handling it disposal
+        /// When running in development log the commandText to the configured logger provider
+        /// </summary>
+        /// <param name="executeCommand">
+        ///  Allow to build the command to be executed
+        /// </param>
+        /// /// <param name="Action">
+        ///  Allow the loggin of the commandText
+        /// </param>
+        /// <returns></returns>
+        Task ExecuteTransaction(Func<IInterviewTestDataBaseCommand, Action, Task> executeCommand);
+
+        /// <summary>
+        /// Create a sqlParameter
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="name">Parameter name</param>
+        /// <param name="value">Parameter value</param>
+        /// <param name="type">Parameter data type</param>
+        /// <returns>The built SqlParameter</returns>
         SqlParameter CreateParam<T>(string name, T value, SqlDbType type);
-        string CreateFilterWithCustomParameter(SqlCommand command, params SqlFilterParam[] sqlFilterParams);
-        string CreateFilter(SqlCommand command, params SqlFilterParam[] sqlFilterParams);
-        string CreateInFilter(SqlCommand command, params SqlFilterParam[] sqlFilterParams);
+
+        /// <summary>
+        /// Allow the creation of a where filter with a custom parameter name
+        /// </summary>
+        /// <param name="command">The command to attach the parameters to</param>
+        /// <param name="sqlFilterParams">A type containing the information about the parameter to add to the filter</param>
+        /// <returns>The built where filter</returns>
+        string CreateFilterWithCustomParameter(IInterviewTestDataBaseCommand command, params SqlFilterParam[] sqlFilterParams);
+
+        /// <summary>
+        /// Allow the creation of a where filter
+        /// </summary>
+        /// <param name="command">The command to attach the parameters to</param>
+        /// <param name="sqlFilterParams">A type containing the information about the parameter to add to the filter</param>
+        /// <returns>The built where filter</returns>
+        string CreateFilter(IInterviewTestDataBaseCommand command, params SqlFilterParam[] sqlFilterParams);
+
+        /// <summary>
+        /// Create a sql "in statement" of the supplied parameters
+        /// </summary>
+        /// <param name="command">The command to attach the parameters to</param>
+        /// <param name="sqlFilterParams">A type containing the information about the parameter to add to the filter</param>
+        /// <returns>An string like: "in(p1,p2,p3)"</returns>
+        string CreateInFilter(IInterviewTestDataBaseCommand command, params SqlFilterParam[] sqlFilterParams);
+
+        /// <summary>
+        /// Create an sql pagin statement
+        /// </summary>
+        /// <param name="page">The page to filter, default to "1"</param>
+        /// <param name="pageSize">The page size, default to 10</param>
+        /// <param name="orderBy">The column to order by, default to Id</param>
+        /// <returns>A sql statement like: 
+        ///  <br/> ORDER BY {orderBy}
+        ///  <br/> OFFSET {(page - 1) * pageSize} ROWS
+        ///  <br/> FETCH NEXT {pageSize}
+        ///  <br/> ROWS ONLY
+        /// </returns>
         string CreatePaging(int page = 1, int pageSize = 10, string orderBy = "Id");
+
+        /// <summary>
+        /// Build the list of field inside the "INTO(fields)", and the "VALUES(@fields)"
+        /// </summary>
+        /// <param name="fields">The fields to add inside the INSERT clauses</param>
+        /// <returns>A string like: "(fields) VALUES (@fields)"</returns>
         string GenerateInsertColumnsBody(params string[] fields);
+
+        /// <summary>
+        /// Build the list of field inside the "UPDATE SET fields = @fields"
+        /// </summary>
+        /// <param name="fields">The fields to add inside the INSERT clauses</param>
+        /// <returns>A string like: "UPDATE SET fields = @fields"</returns>
         string GenerateUpdateColumnsBody(params string[] fields);
     }
 
@@ -32,12 +109,12 @@ namespace InterviewTest.Data
             _hostEnvironment = hostEnvironment;
         }
 
-        public async Task Execute(Func<SqlCommand, Task> executeCommand)
+        public async Task Execute(Func<IInterviewTestDataBaseCommand, Task> executeCommand)
         {
             try
             {
-                using var connection = await _sqlFactory.GetConnection();
-                using var command = connection.CreateCommand();
+                await using var connection = await _sqlFactory.GetConnection();
+                await using var command = connection.CreateCommand();
                 await executeCommand(command);
                 LogCommand(command);
             }
@@ -48,11 +125,11 @@ namespace InterviewTest.Data
             }
         }
 
-        public async Task ExecuteTransaction(Func<SqlCommand, Action, Task> executeCommand)
+        public async Task ExecuteTransaction(Func<IInterviewTestDataBaseCommand, Action, Task> executeCommand)
         {
-            using var connection = await _sqlFactory.GetConnection();
+            await using var connection = await _sqlFactory.GetConnection();
             using var transaction = (SqlTransaction)await connection.BeginTransactionAsync();
-            using var command = connection.CreateCommand();
+            await using var command = connection.CreateCommand();
 
             command.Transaction = transaction;
 
@@ -89,7 +166,7 @@ namespace InterviewTest.Data
             };
         }
 
-        public string CreateFilter(SqlCommand command, params SqlFilterParam[] sqlFilterParams)
+        public string CreateFilter(IInterviewTestDataBaseCommand command, params SqlFilterParam[] sqlFilterParams)
         {
             var where = new StringBuilder();
             foreach (var sqlFilterParam in sqlFilterParams)
@@ -104,14 +181,14 @@ namespace InterviewTest.Data
 
             if (where.Length > 0)
             {
-                where.Remove(where.Length - 4, 4);
+                where.Remove(where.Length - 5, 5);
                 where.Insert(0, " WHERE ");
             }
 
             return where.ToString();
         }
 
-        public string CreateFilterWithCustomParameter(SqlCommand command, params SqlFilterParam[] sqlFilterParams)
+        public string CreateFilterWithCustomParameter(IInterviewTestDataBaseCommand command, params SqlFilterParam[] sqlFilterParams)
         {
             var where = new StringBuilder();
             foreach (var sqlFilterParam in sqlFilterParams)
@@ -126,14 +203,14 @@ namespace InterviewTest.Data
 
             if (where.Length > 0)
             {
-                where.Remove(where.Length - 4, 4);
+                where.Remove(where.Length - 5, 5);
                 where.Insert(0, " WHERE ");
             }
 
             return where.ToString();
         }
 
-        public string CreateInFilter(SqlCommand command, params SqlFilterParam[] sqlFilterParams)
+        public string CreateInFilter(IInterviewTestDataBaseCommand command, params SqlFilterParam[] sqlFilterParams)
         {
             var filter = new StringBuilder();
             filter.Append("(");
@@ -149,6 +226,7 @@ namespace InterviewTest.Data
             if (filter.Length > 0)
             {
                 filter.Remove(filter.Length - 2, 2);
+                filter.Insert(0, "IN ");
             }
             filter.Append(")");
 
@@ -160,11 +238,10 @@ namespace InterviewTest.Data
             page = page <= 0 ? 1 : page;
             pageSize = pageSize <= 0 ? 10 : pageSize;
 
-            return @$"
-                ORDER BY {orderBy}
-                OFFSET {(page - 1) * pageSize} ROWS
-                FETCH NEXT {pageSize} ROWS ONLY   
-            ";
+            return
+                $" ORDER BY {orderBy} " +
+                $"OFFSET {(page - 1) * pageSize} ROWS " +
+                $"FETCH NEXT {pageSize} ROWS ONLY ";
         }
 
         public string GenerateInsertColumnsBody(params string[] fields)
@@ -200,7 +277,7 @@ namespace InterviewTest.Data
             return udpate.ToString();
         }
 
-        private void LogCommand(SqlCommand command)
+        private void LogCommand(IInterviewTestDataBaseCommand command)
         {
             if (_hostEnvironment.IsDevelopment())
             {
@@ -215,5 +292,12 @@ namespace InterviewTest.Data
         }
     }
 
+    /// <summary>
+    /// Represent a parameter to be transformed into a SqlParameter
+    /// </summary>
+    /// <param name="Param">Parameter name</param>
+    /// <param name="Value">Parameter value</param>
+    /// <param name="Type">Paramete type</param>
+    /// <param name="ParamName">A custom parameter name</param>
     public record SqlFilterParam(string Param, object Value, SqlDbType Type, string ParamName = "");
 }

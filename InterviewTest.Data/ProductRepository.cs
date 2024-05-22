@@ -84,7 +84,7 @@ namespace InterviewTest.Data
                     ids.Select(id => new SqlFilterParam(nameof(Product.Id), id, SqlDbType.BigInt)).ToArray()
                 );
 
-                command.CommandText = $"SELECT * FROM  [{nameof(Product)}] WHERE {nameof(Product.Id)} IN {inFilter}";
+                command.CommandText = $"SELECT * FROM  [{nameof(Product)}] WHERE {nameof(Product.Id)} {inFilter}";
 
                 using var reader = await command.ExecuteReaderAsync();
                 while (await reader.ReadAsync())
@@ -140,7 +140,7 @@ namespace InterviewTest.Data
             });
         }
 
-        private void AddParamenters(SqlCommand command, Product product)
+        private void AddParamenters(IInterviewTestDataBaseCommand command, Product product)
         {
             command.Parameters.Add(_adoCommand.CreateParam(nameof(Product.Code), product.Code, SqlDbType.NVarChar));
             command.Parameters.Add(_adoCommand.CreateParam(nameof(Product.Name), product.Name, SqlDbType.NVarChar));

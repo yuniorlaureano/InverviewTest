@@ -94,7 +94,7 @@ namespace InterviewTest.Data
             });
         }
 
-        private void AddParamenters(SqlCommand command, Country country)
+        private void AddParamenters(IInterviewTestDataBaseCommand command, Country country)
         {
             command.Parameters.Add(_adoCommand.CreateParam(nameof(Country.Name), country.Name, SqlDbType.NVarChar));
         }
