@@ -7,10 +7,10 @@ namespace InterviewTest.Service
 {
     public interface ICityService
     {
-        public Task<CityListDto?> GetById(long id);
-        Task<IEnumerable<CityListDto>> Get(int page = 1, int pageSize = 10, string? name = null, string? City = null);
-        public Task Add(CityCreationDto CityDto);
-        public Task Update(CityUpdateDto CityDto);
+        public Task<CityListDto?> GetByIdAsync(long id);
+        Task<IEnumerable<CityListDto>> GetAsync(int page = 1, int pageSize = 10, string? name = null, string? City = null);
+        public Task AddAsync(CityCreationDto CityDto);
+        public Task UpdateAsync(CityUpdateDto CityDto);
     }
 
     public class CityService : ICityService
@@ -24,28 +24,28 @@ namespace InterviewTest.Service
             _mapper = mapper;
         }
 
-        public async Task Add(CityCreationDto cityDto)
+        public async Task AddAsync(CityCreationDto cityDto)
         {
             var city = _mapper.Map<City>(cityDto);
-            await _CityRepository.Add(city);
+            await _CityRepository.AddAsync(city);
         }
 
-        public async Task<CityListDto?> GetById(long id)
+        public async Task<CityListDto?> GetByIdAsync(long id)
         {
-            var city = await _CityRepository.GetById(id);
+            var city = await _CityRepository.GetByIdAsync(id);
             return _mapper.Map<CityListDto>(city);
         }
 
-        public async Task<IEnumerable<CityListDto>> Get(int page = 1, int pageSize = 10, string? name = null, string? city = null)
+        public async Task<IEnumerable<CityListDto>> GetAsync(int page = 1, int pageSize = 10, string? name = null, string? city = null)
         {
-            var citys = await _CityRepository.Get(page, pageSize, name, city);
+            var citys = await _CityRepository.GetAsync(page, pageSize, name, city);
             return _mapper.Map<IEnumerable<CityListDto>>(citys);
         }
 
-        public async Task Update(CityUpdateDto cityDto)
+        public async Task UpdateAsync(CityUpdateDto cityDto)
         {
             var city = _mapper.Map<City>(cityDto);
-            await _CityRepository.Update(city);
+            await _CityRepository.UpdateAsync(city);
         }
     }
 }

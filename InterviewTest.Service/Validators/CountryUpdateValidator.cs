@@ -16,7 +16,7 @@ namespace InterviewTest.Service.Validators
                 .NotNull()
                 .MustAsync(async (id, token) =>
                 {
-                    return (await countryService.GetById(id)) is not null;
+                    return (await countryService.GetByIdAsync(id)) is not null;
                 }).WithMessage("The country does not exist");
 
         }

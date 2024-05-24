@@ -31,7 +31,7 @@ namespace InterviewTest.Api.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<ProvinceListDto?> Get(int id)
         {
-            return await _provinceService.GetById(id);
+            return await _provinceService.GetByIdAsync(id);
         }
 
         [HttpGet()]
@@ -42,7 +42,7 @@ namespace InterviewTest.Api.Controllers
             [FromQuery] string? name = null,
             [FromQuery] string? country = null)
         {
-            return await _provinceService.Get(page, pageSize, name, country);
+            return await _provinceService.GetAsync(page, pageSize, name, country);
         }
 
         [HttpPost()]
@@ -62,7 +62,7 @@ namespace InterviewTest.Api.Controllers
                     );
             }
 
-            await _provinceService.Add(province);
+            await _provinceService.AddAsync(province);
             return NoContent();
         }
 
@@ -82,7 +82,7 @@ namespace InterviewTest.Api.Controllers
                     );
             }
 
-            await _provinceService.Update(province);
+            await _provinceService.UpdateAsync(province);
             return NoContent();
         }
     }

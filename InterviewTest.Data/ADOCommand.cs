@@ -17,7 +17,7 @@ namespace InterviewTest.Data
         ///  Allow to build the command to be executed
         /// </param>
         /// <returns></returns>
-        Task Execute(Func<IInterviewTestDataBaseCommand, Task> executeCommand);
+        Task ExecuteAsync(Func<IInterviewTestDataBaseCommand, Task> executeCommand);
 
         /// <summary>
         /// Allow the execution of a command against the database using transaction
@@ -31,7 +31,7 @@ namespace InterviewTest.Data
         ///  Allow the loggin of the commandText
         /// </param>
         /// <returns></returns>
-        Task ExecuteTransaction(Func<IInterviewTestDataBaseCommand, Action, Task> executeCommand);
+        Task ExecuteTransactionAsync(Func<IInterviewTestDataBaseCommand, Action, Task> executeCommand);
 
         /// <summary>
         /// Create a sqlParameter
@@ -109,11 +109,11 @@ namespace InterviewTest.Data
             _hostEnvironment = hostEnvironment;
         }
 
-        public async Task Execute(Func<IInterviewTestDataBaseCommand, Task> executeCommand)
+        public async Task ExecuteAsync(Func<IInterviewTestDataBaseCommand, Task> executeCommand)
         {
             try
             {
-                await using var connection = await _sqlFactory.GetConnection();
+                await using var connection = await _sqlFactory.GetConnectionAsync();
                 await using var command = connection.CreateCommand();
                 await executeCommand(command);
                 LogCommand(command);
@@ -125,9 +125,9 @@ namespace InterviewTest.Data
             }
         }
 
-        public async Task ExecuteTransaction(Func<IInterviewTestDataBaseCommand, Action, Task> executeCommand)
+        public async Task ExecuteTransactionAsync(Func<IInterviewTestDataBaseCommand, Action, Task> executeCommand)
         {
-            await using var connection = await _sqlFactory.GetConnection();
+            await using var connection = await _sqlFactory.GetConnectionAsync();
             using var transaction = (SqlTransaction)await connection.BeginTransactionAsync();
             await using var command = connection.CreateCommand();
 

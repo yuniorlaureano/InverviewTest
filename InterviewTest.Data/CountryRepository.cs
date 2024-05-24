@@ -7,10 +7,10 @@ namespace InterviewTest.Data
 {
     public interface ICountryRepository
     {
-        public Task<Country?> GetById(long id);
-        public Task<IEnumerable<Country>> Get(int page = 1, int pageSize = 10, string? name = null);
-        public Task Add(Country Country);
-        public Task Update(Country Country);
+        public Task<Country?> GetByIdAsync(long id);
+        public Task<IEnumerable<Country>> GetAsync(int page = 1, int pageSize = 10, string? name = null);
+        public Task AddAsync(Country Country);
+        public Task UpdateAsync(Country Country);
     }
 
     public class CountryRepository : ICountryRepository
@@ -22,9 +22,9 @@ namespace InterviewTest.Data
             _adoCommand = adoCommand;
         }
 
-        public async Task Add(Country country)
+        public async Task AddAsync(Country country)
         {
-            await _adoCommand.Execute(async (command) =>
+            await _adoCommand.ExecuteAsync(async (command) =>
             {
                 command.CommandText = @$"INSERT INTO [{nameof(Country)}]
                     {_adoCommand.GenerateInsertColumnsBody(
@@ -36,10 +36,10 @@ namespace InterviewTest.Data
             });
         }
 
-        public async Task<Country?> GetById(long id)
+        public async Task<Country?> GetByIdAsync(long id)
         {
             Country? country = null;
-            await _adoCommand.Execute(async (command) =>
+            await _adoCommand.ExecuteAsync(async (command) =>
             {
                 command.Parameters.Add(_adoCommand.CreateParam($"@{nameof(Country.Id)}", id, SqlDbType.BigInt));
                 command.CommandText = $"SELECT * FROM  [{nameof(Country)}] WHERE {nameof(Country.Id)} = @{nameof(Country.Id)}";
@@ -54,10 +54,10 @@ namespace InterviewTest.Data
             return country;
         }
 
-        public async Task<IEnumerable<Country>> Get(int page = 1, int pageSize = 10, string? name = null)
+        public async Task<IEnumerable<Country>> GetAsync(int page = 1, int pageSize = 10, string? name = null)
         {
             var Countrys = new List<Country>();
-            await _adoCommand.Execute(async (command) =>
+            await _adoCommand.ExecuteAsync(async (command) =>
             {
                 var filter = _adoCommand.CreateFilter(command,
                     new SqlFilterParam(nameof(Country.Name), name, SqlDbType.NVarChar)
@@ -77,9 +77,9 @@ namespace InterviewTest.Data
             return Countrys;
         }
 
-        public async Task Update(Country country)
+        public async Task UpdateAsync(Country country)
         {
-            await _adoCommand.Execute(async (command) =>
+            await _adoCommand.ExecuteAsync(async (command) =>
             {
                 command.CommandText = @$"UPDATE [{nameof(Country)}]
                    SET 

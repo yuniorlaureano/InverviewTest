@@ -32,7 +32,7 @@ namespace InterviewTest.Api.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<StockListDto?> Get(int id)
         {
-            return await _stockService.GetById(id);
+            return await _stockService.GetByIdAsync(id);
         }
 
         [HttpGet()]
@@ -43,7 +43,7 @@ namespace InterviewTest.Api.Controllers
             TransactionType? transactionType = null,
             string? description = null)
         {
-            return await _stockService.Get(page, pageSize, transactionType, description);
+            return await _stockService.GetAsync(page, pageSize, transactionType, description);
         }
 
         [HttpGet("available-products")]
@@ -53,7 +53,7 @@ namespace InterviewTest.Api.Controllers
            [FromQuery] int pageSize = 10,
            TransactionType? transactionType = null)
         {
-            return await _stockService.GetProductsInStock(page, pageSize, transactionType);
+            return await _stockService.GetProductsInStockAsync(page, pageSize, transactionType);
         }
 
 
@@ -74,7 +74,7 @@ namespace InterviewTest.Api.Controllers
                     );
             }
 
-            await _stockService.Add(stock);
+            await _stockService.AddAsync(stock);
             return NoContent();
         }
 
@@ -94,7 +94,7 @@ namespace InterviewTest.Api.Controllers
                     );
             }
 
-            await _stockService.Update(stock);
+            await _stockService.UpdateAsync(stock);
             return NoContent();
         }
 
@@ -102,7 +102,7 @@ namespace InterviewTest.Api.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> Delete(long id)
         {
-            await _stockService.Delete(id);
+            await _stockService.DeleteAsync(id);
             return NoContent();
         }
     }

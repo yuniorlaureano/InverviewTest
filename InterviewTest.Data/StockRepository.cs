@@ -8,19 +8,19 @@ namespace InterviewTest.Data
 {
     public interface IStockRepository
     {
-        public Task<Stock?> GetById(long id);
-        public Task<IEnumerable<Stock>> Get(
+        public Task<Stock?> GetByIdAsync(long id);
+        public Task<IEnumerable<Stock>> GetAsync(
             int page = 1,
             int pageSize = 10,
             TransactionType? transactionType = null,
             string? description = null);
-        Task<IEnumerable<AvailableProduct>> GetProductsInStock(
+        Task<IEnumerable<AvailableProduct>> GetProductsInStockAsync(
             int page = 1,
             int pageSize = 10,
             TransactionType? transactionType = null);
-        public Task Add(Stock stock, IEnumerable<StockDetail> stockDetails);
-        public Task Update(Stock stock, IEnumerable<StockDetail> stockDetails);
-        public Task Delete(long id);
+        public Task AddAsync(Stock stock, IEnumerable<StockDetail> stockDetails);
+        public Task UpdateAsync(Stock stock, IEnumerable<StockDetail> stockDetails);
+        public Task DeleteAsync(long id);
     }
 
     public class StockRepository : IStockRepository
@@ -32,9 +32,9 @@ namespace InterviewTest.Data
             _adoCommand = adoCommand;
         }
 
-        public async Task Add(Stock stock, IEnumerable<StockDetail> stockDetails)
+        public async Task AddAsync(Stock stock, IEnumerable<StockDetail> stockDetails)
         {
-            await _adoCommand.ExecuteTransaction(async (command, onQuery) =>
+            await _adoCommand.ExecuteTransactionAsync(async (command, onQuery) =>
             {
                 command.CommandText = @$"INSERT INTO [{nameof(Stock)}]
                 {_adoCommand.GenerateInsertColumnsBody(
@@ -83,9 +83,9 @@ namespace InterviewTest.Data
             });
         }
 
-        public async Task Delete(long id)
+        public async Task DeleteAsync(long id)
         {
-            await _adoCommand.Execute(async (command) =>
+            await _adoCommand.ExecuteAsync(async (command) =>
             {
                 command.Parameters.Add(_adoCommand.CreateParam($"@{nameof(Stock.Id)}", id, SqlDbType.BigInt));
                 command.CommandText = $"DELETE FROM [{nameof(Stock)}] WHERE Id = @Id";
@@ -93,10 +93,10 @@ namespace InterviewTest.Data
             });
         }
 
-        public async Task<Stock?> GetById(long id)
+        public async Task<Stock?> GetByIdAsync(long id)
         {
             Stock? stock = null;
-            await _adoCommand.Execute(async (command) =>
+            await _adoCommand.ExecuteAsync(async (command) =>
             {
                 command.Parameters.Add(_adoCommand.CreateParam($"@{nameof(stock.Id)}", id, SqlDbType.BigInt));
                 command.CommandText = $"SELECT * FROM  [{nameof(Stock)}] WHERE {nameof(stock.Id)} = @{nameof(stock.Id)}";
@@ -111,14 +111,14 @@ namespace InterviewTest.Data
             return stock;
         }
 
-        public async Task<IEnumerable<Stock>> Get(
+        public async Task<IEnumerable<Stock>> GetAsync(
             int page = 1,
             int pageSize = 10,
             TransactionType? transactionType = null,
             string? description = null)
         {
             var stocks = new List<Stock>();
-            await _adoCommand.Execute(async (command) =>
+            await _adoCommand.ExecuteAsync(async (command) =>
             {
                 var filter = _adoCommand.CreateFilter(command,
                    new SqlFilterParam(nameof(Stock.Description), description, SqlDbType.NVarChar),
@@ -139,13 +139,13 @@ namespace InterviewTest.Data
             return stocks;
         }
 
-        public async Task<IEnumerable<AvailableProduct>> GetProductsInStock(
+        public async Task<IEnumerable<AvailableProduct>> GetProductsInStockAsync(
             int page = 1,
             int pageSize = 10,
             TransactionType? transactionType = null)
         {
             var availableStock = new List<AvailableProduct>();
-            await _adoCommand.Execute(async (command) =>
+            await _adoCommand.ExecuteAsync(async (command) =>
             {
                 var filter = _adoCommand.CreateFilter(command,
                    new SqlFilterParam(nameof(Stock.TransactionType), transactionType, SqlDbType.TinyInt)
@@ -193,9 +193,9 @@ namespace InterviewTest.Data
             return availableStock;
         }
 
-        public async Task Update(Stock stock, IEnumerable<StockDetail> stockDetails)
+        public async Task UpdateAsync(Stock stock, IEnumerable<StockDetail> stockDetails)
         {
-            await _adoCommand.ExecuteTransaction(async (command, onQuery) =>
+            await _adoCommand.ExecuteTransactionAsync(async (command, onQuery) =>
             {
                 //Update the stock master
                 command.CommandText = @$"UPDATE [{nameof(Stock)}]

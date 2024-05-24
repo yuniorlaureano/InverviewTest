@@ -6,7 +6,7 @@ namespace InterviewTest.Data
 {
     public interface IStockDetailRepository
     {
-        Task<IEnumerable<StockDetail>> GetByStockId(long stockId);
+        Task<IEnumerable<StockDetail>> GetByStockIdAsync(long stockId);
     }
 
     public class StockDetailRepository : IStockDetailRepository
@@ -18,10 +18,10 @@ namespace InterviewTest.Data
             _adoCommand = adoCommand;
         }
 
-        public async Task<IEnumerable<StockDetail>> GetByStockId(long stockId)
+        public async Task<IEnumerable<StockDetail>> GetByStockIdAsync(long stockId)
         {
             var stockDetails = new List<StockDetail>();
-            await _adoCommand.Execute(async (command) =>
+            await _adoCommand.ExecuteAsync(async (command) =>
             {
                 command.Parameters.Add(_adoCommand.CreateParam($"@{nameof(StockDetail.StockId)}", stockId, SqlDbType.BigInt));
                 command.CommandText = $"SELECT * FROM  [{nameof(StockDetail)}] WHERE {nameof(StockDetail.StockId)} = @{nameof(StockDetail.StockId)}";

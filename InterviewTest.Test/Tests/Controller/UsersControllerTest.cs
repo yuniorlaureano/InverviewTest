@@ -41,7 +41,7 @@ namespace InterviewTest.Test.Tests.Controller
             var user = new UserListDto();
 
             _userService
-                .Setup(x => x.GetById(userId))
+                .Setup(x => x.GetByIdAsync(userId))
                 .ReturnsAsync(user);
 
             var result = await _usersController.Get(userId);
@@ -62,7 +62,7 @@ namespace InterviewTest.Test.Tests.Controller
             };
 
             _userService
-                .Setup(x => x.Get(page, pageSize, age, country))
+                .Setup(x => x.GetAsync(page, pageSize, age, country))
                 .ReturnsAsync(users);
 
 
@@ -88,10 +88,10 @@ namespace InterviewTest.Test.Tests.Controller
             var userRepository = new Mock<IUserRepository>();
 
             userService
-               .Setup(x => x.Add(userCreation));
+               .Setup(x => x.AddAsync(userCreation));
 
             userService
-                .Setup(x => x.GetByEmail(It.IsAny<string>()))
+                .Setup(x => x.GetByEmailAsync(It.IsAny<string>()))
                 .ReturnsAsync(() => null);
 
             var services = DependencyBuilder.GetServices((serviceCollection, _) =>
@@ -133,10 +133,10 @@ namespace InterviewTest.Test.Tests.Controller
             var userRepository = new Mock<IUserRepository>();
 
             userService
-               .Setup(x => x.Add(userCreation));
+               .Setup(x => x.AddAsync(userCreation));
 
             userService
-                .Setup(x => x.GetByEmail(It.IsAny<string>()))
+                .Setup(x => x.GetByEmailAsync(It.IsAny<string>()))
                 .ReturnsAsync(() => null);
 
             var services = DependencyBuilder.GetServices((serviceCollection, configuration) =>
@@ -187,10 +187,10 @@ namespace InterviewTest.Test.Tests.Controller
             var userRepository = new Mock<IUserRepository>();
 
             userService
-               .Setup(x => x.Add(userCreation));
+               .Setup(x => x.AddAsync(userCreation));
 
             userService
-                .Setup(x => x.GetByEmail(It.IsAny<string>()))
+                .Setup(x => x.GetByEmailAsync(It.IsAny<string>()))
                 .ReturnsAsync(() => null);
 
             var services = DependencyBuilder.GetServices((serviceCollection, _) =>
@@ -241,10 +241,10 @@ namespace InterviewTest.Test.Tests.Controller
             var userRepository = new Mock<IUserRepository>();
 
             userService
-               .Setup(x => x.Add(It.IsAny<UserCreationDto>()));
+               .Setup(x => x.AddAsync(It.IsAny<UserCreationDto>()));
 
             userService
-                .Setup(x => x.GetByEmail(It.IsAny<string>()))
+                .Setup(x => x.GetByEmailAsync(It.IsAny<string>()))
                 .ReturnsAsync(() => null);
 
             var services = DependencyBuilder.GetServices((serviceCollection, _) =>
@@ -291,10 +291,10 @@ namespace InterviewTest.Test.Tests.Controller
             var userRepository = new Mock<IUserRepository>();
 
             userService
-               .Setup(x => x.Add(It.IsAny<UserCreationDto>()));
+               .Setup(x => x.AddAsync(It.IsAny<UserCreationDto>()));
 
             userService
-                .Setup(x => x.GetByEmail(It.IsAny<string>()))
+                .Setup(x => x.GetByEmailAsync(It.IsAny<string>()))
                 .ReturnsAsync(() => null);
 
             var services = DependencyBuilder.GetServices((serviceCollection, _) =>
@@ -350,10 +350,10 @@ namespace InterviewTest.Test.Tests.Controller
             var userRepository = new Mock<IUserRepository>();
 
             userService
-               .Setup(x => x.Add(It.IsAny<UserCreationDto>()));
+               .Setup(x => x.AddAsync(It.IsAny<UserCreationDto>()));
 
             userService
-                .Setup(x => x.GetByEmail(It.IsAny<string>()))
+                .Setup(x => x.GetByEmailAsync(It.IsAny<string>()))
                 .ReturnsAsync(() => null);
 
             var services = DependencyBuilder.GetServices((serviceCollection, _) =>
@@ -400,14 +400,14 @@ namespace InterviewTest.Test.Tests.Controller
             var userRepository = new Mock<IUserRepository>();
 
             userService
-               .Setup(x => x.Update(userUpdate));
+               .Setup(x => x.UpdateAsync(userUpdate));
 
             userService
-                .Setup(x => x.GetByEmail(It.IsAny<string>()))
+                .Setup(x => x.GetByEmailAsync(It.IsAny<string>()))
                 .ReturnsAsync(() => null);
 
             userService
-                .Setup(x => x.GetById(userUpdate.Id))
+                .Setup(x => x.GetByIdAsync(userUpdate.Id))
                 .ReturnsAsync(() => userList);
 
             var services = DependencyBuilder.GetServices((serviceCollection, _) =>
@@ -446,14 +446,14 @@ namespace InterviewTest.Test.Tests.Controller
             var userRepository = new Mock<IUserRepository>();
 
             userService
-               .Setup(x => x.Update(userUpdate));
+               .Setup(x => x.UpdateAsync(userUpdate));
 
             userService
-                .Setup(x => x.GetByEmail(It.IsAny<string>()))
+                .Setup(x => x.GetByEmailAsync(It.IsAny<string>()))
                 .ReturnsAsync(() => null);
 
             userService
-                .Setup(x => x.GetById(It.IsAny<long>()))
+                .Setup(x => x.GetByIdAsync(It.IsAny<long>()))
                 .ReturnsAsync(() => null);
 
             var services = DependencyBuilder.GetServices((serviceCollection, _) =>
@@ -503,14 +503,14 @@ namespace InterviewTest.Test.Tests.Controller
             var userRepository = new Mock<IUserRepository>();
 
             userService
-               .Setup(x => x.Update(userUpdate));
+               .Setup(x => x.UpdateAsync(userUpdate));
 
             userService
-                .Setup(x => x.GetByEmail(It.IsAny<string>()))
+                .Setup(x => x.GetByEmailAsync(It.IsAny<string>()))
                 .ReturnsAsync(() => null);
 
             userService
-                .Setup(x => x.GetById(It.IsAny<long>()))
+                .Setup(x => x.GetByIdAsync(It.IsAny<long>()))
                 .ReturnsAsync(() => null);
 
             var services = DependencyBuilder.GetServices((serviceCollection, _) =>
@@ -545,11 +545,11 @@ namespace InterviewTest.Test.Tests.Controller
             var user = new UserListDto();
 
             _userService
-                .Setup(x => x.GetById(userId))
+                .Setup(x => x.GetByIdAsync(userId))
                 .ReturnsAsync(user);
 
             _userService
-                .Setup(x => x.Delete(userId));
+                .Setup(x => x.DeleteAsync(userId));
 
             var result = await _usersController.Delete(userId);
             result.Should().BeOfType<NoContentResult>();
@@ -562,11 +562,11 @@ namespace InterviewTest.Test.Tests.Controller
             var user = new UserListDto();
 
             _userService
-                .Setup(x => x.GetById(userId))
+                .Setup(x => x.GetByIdAsync(userId))
                 .ReturnsAsync(() => null);
 
             _userService
-                .Setup(x => x.Delete(userId));
+                .Setup(x => x.DeleteAsync(userId));
 
             var result = await _usersController.Delete(userId);
             result.Should().BeOfType<NotFoundResult>();

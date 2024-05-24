@@ -28,7 +28,7 @@ namespace InterviewTest.Test.Tests.Service
                 .Build<CountryCreationDto>()
                 .Create();
 
-            var countries = await _countryService.Get(name: country.Name);
+            var countries = await _countryService.GetAsync(name: country.Name);
             Assert.NotNull(countries);
         }
 
@@ -39,16 +39,16 @@ namespace InterviewTest.Test.Tests.Service
                 .Build<CountryCreationDto>()
                 .Create();
 
-            await _countryService.Add(country);
+            await _countryService.AddAsync(country);
 
-            var insertedcountry = (await _countryService.Get(name: country.Name)).First();
+            var insertedcountry = (await _countryService.GetAsync(name: country.Name)).First();
 
             insertedcountry.Name = "Modified " + Guid.NewGuid();
 
             var countryUpdate = _mapper.Map<CountryUpdateDto>(insertedcountry);
-            await _countryService.Update(countryUpdate);
+            await _countryService.UpdateAsync(countryUpdate);
 
-            var updatedcountry = await _countryService.GetById(insertedcountry.Id);
+            var updatedcountry = await _countryService.GetByIdAsync(insertedcountry.Id);
 
             Assert.Equal(updatedcountry.Name, insertedcountry.Name);
         }
@@ -60,9 +60,9 @@ namespace InterviewTest.Test.Tests.Service
                 .Build<CountryCreationDto>()
                 .Create();
 
-            await _countryService.Add(country);
+            await _countryService.AddAsync(country);
 
-            var insertedcountry = (await _countryService.Get(name: country.Name)).First();
+            var insertedcountry = (await _countryService.GetAsync(name: country.Name)).First();
 
             Assert.NotNull(insertedcountry);
         }
@@ -74,11 +74,11 @@ namespace InterviewTest.Test.Tests.Service
                 .Build<CountryCreationDto>()
                 .Create();
 
-            await _countryService.Add(country);
+            await _countryService.AddAsync(country);
 
-            var insertedcountry = (await _countryService.Get(name: country.Name)).First();
+            var insertedcountry = (await _countryService.GetAsync(name: country.Name)).First();
 
-            var countryById = await _countryService.GetById(insertedcountry.Id);
+            var countryById = await _countryService.GetByIdAsync(insertedcountry.Id);
 
             Assert.NotNull(countryById);
         }

@@ -33,7 +33,7 @@ namespace InterviewTest.Test.Fixtures
                 .Build<ProductCreationDto>()
                 .Create();
 
-            await ProductService.Add(product);
+            await ProductService.AddAsync(product);
 
             return product;
         }
@@ -52,10 +52,10 @@ namespace InterviewTest.Test.Fixtures
                    .Build<ProductCreationDto>()
                    .Create();
 
-            await ProductService.Add(product1);
-            await ProductService.Add(product2);
+            await ProductService.AddAsync(product1);
+            await ProductService.AddAsync(product2);
 
-            return await ProductService.Get(pageSize: 2);
+            return await ProductService.GetAsync(pageSize: 2);
         }
 
         public async Task<(StockCreationDto Stock, List<StockDetailCreationDto> StockDetail)> MockStockAndDetail()

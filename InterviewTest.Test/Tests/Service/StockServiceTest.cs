@@ -20,10 +20,10 @@ namespace InterviewTest.Test.Tests.Service
             var (Stock, StockDetail) = await _inventoryServiceTestFixture.MockStockAndDetail();
 
             Stock.StockDetailListDtos = StockDetail;
-            await _inventoryServiceTestFixture.StockService.Add(Stock);
+            await _inventoryServiceTestFixture.StockService.AddAsync(Stock);
 
-            var insertedStocks = await _inventoryServiceTestFixture.StockService.Get(description: Stock.Description);
-            var insertedStock = await _inventoryServiceTestFixture.StockService.GetById(insertedStocks.First().Id);
+            var insertedStocks = await _inventoryServiceTestFixture.StockService.GetAsync(description: Stock.Description);
+            var insertedStock = await _inventoryServiceTestFixture.StockService.GetByIdAsync(insertedStocks.First().Id);
 
             Assert.NotNull(insertedStock);
         }
@@ -34,9 +34,9 @@ namespace InterviewTest.Test.Tests.Service
             var (Stock, StockDetail) = await _inventoryServiceTestFixture.MockStockAndDetail();
 
             Stock.StockDetailListDtos = StockDetail;
-            await _inventoryServiceTestFixture.StockService.Add(Stock);
+            await _inventoryServiceTestFixture.StockService.AddAsync(Stock);
 
-            var insertedStocks = await _inventoryServiceTestFixture.StockService.Get();
+            var insertedStocks = await _inventoryServiceTestFixture.StockService.GetAsync();
 
             Assert.True(insertedStocks.Any());
         }
@@ -47,9 +47,9 @@ namespace InterviewTest.Test.Tests.Service
             var (Stock, StockDetail) = await _inventoryServiceTestFixture.MockStockAndDetail();
 
             Stock.StockDetailListDtos = StockDetail;
-            await _inventoryServiceTestFixture.StockService.Add(Stock);
+            await _inventoryServiceTestFixture.StockService.AddAsync(Stock);
 
-            var insertedStocks = await _inventoryServiceTestFixture.StockService.Get(description: Stock.Description);
+            var insertedStocks = await _inventoryServiceTestFixture.StockService.GetAsync(description: Stock.Description);
 
             Assert.Single(insertedStocks);
         }
@@ -60,17 +60,17 @@ namespace InterviewTest.Test.Tests.Service
             var (Stock, StockDetail) = await _inventoryServiceTestFixture.MockStockAndDetail();
 
             Stock.StockDetailListDtos = StockDetail;
-            await _inventoryServiceTestFixture.StockService.Add(Stock);
+            await _inventoryServiceTestFixture.StockService.AddAsync(Stock);
 
-            var insertedStocks = await _inventoryServiceTestFixture.StockService.Get();
+            var insertedStocks = await _inventoryServiceTestFixture.StockService.GetAsync();
             var insertedStock = insertedStocks.First();
 
             Stock.StockDetailListDtos = StockDetail;
             insertedStock.Description = "modified";
             var newStock = _inventoryServiceTestFixture.Mapper.Map<StockUpdateDto>(insertedStock);
-            await _inventoryServiceTestFixture.StockService.Update(newStock);
+            await _inventoryServiceTestFixture.StockService.UpdateAsync(newStock);
 
-            var modifiedStock = await _inventoryServiceTestFixture.StockService.GetById(insertedStock.Id);
+            var modifiedStock = await _inventoryServiceTestFixture.StockService.GetByIdAsync(insertedStock.Id);
 
             Assert.Equal(insertedStock.Description, modifiedStock.Description);
         }
@@ -81,14 +81,14 @@ namespace InterviewTest.Test.Tests.Service
             var (Stock, StockDetail) = await _inventoryServiceTestFixture.MockStockAndDetail();
 
             Stock.StockDetailListDtos = StockDetail;
-            await _inventoryServiceTestFixture.StockService.Add(Stock);
+            await _inventoryServiceTestFixture.StockService.AddAsync(Stock);
 
-            var insertedStocks = await _inventoryServiceTestFixture.StockService.Get();
+            var insertedStocks = await _inventoryServiceTestFixture.StockService.GetAsync();
             var insertedStock = insertedStocks.First();
 
-            await _inventoryServiceTestFixture.StockService.Delete(insertedStock.Id);
+            await _inventoryServiceTestFixture.StockService.DeleteAsync(insertedStock.Id);
 
-            var deletedStock = await _inventoryServiceTestFixture.StockService.GetById(insertedStock.Id);
+            var deletedStock = await _inventoryServiceTestFixture.StockService.GetByIdAsync(insertedStock.Id);
 
             Assert.Null(deletedStock);
         }
@@ -116,10 +116,10 @@ namespace InterviewTest.Test.Tests.Service
                 }
 
                 stock.StockDetailListDtos = stockDetailCreationDtos;
-                await _inventoryServiceTestFixture.StockService.Add(stock);
+                await _inventoryServiceTestFixture.StockService.AddAsync(stock);
             }
 
-            var insertedStocks = await _inventoryServiceTestFixture.StockService.Get(pageSize: 5);
+            var insertedStocks = await _inventoryServiceTestFixture.StockService.GetAsync(pageSize: 5);
 
             Assert.Equal(5, insertedStocks.Count());
         }
@@ -130,9 +130,9 @@ namespace InterviewTest.Test.Tests.Service
             var (Stock, StockDetail) = await _inventoryServiceTestFixture.MockStockAndDetail();
 
             Stock.StockDetailListDtos = StockDetail;
-            await _inventoryServiceTestFixture.StockService.Add(Stock);
+            await _inventoryServiceTestFixture.StockService.AddAsync(Stock);
 
-            var insertedStocks = await _inventoryServiceTestFixture.StockService.Get(description: Stock.Description);
+            var insertedStocks = await _inventoryServiceTestFixture.StockService.GetAsync(description: Stock.Description);
 
             Assert.Equal(2, insertedStocks.First().StockDetailListDtos.Count());
         }

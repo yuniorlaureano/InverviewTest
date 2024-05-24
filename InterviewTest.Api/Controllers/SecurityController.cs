@@ -46,7 +46,7 @@ namespace InterviewTest.Api.Controllers
                     );
             }
 
-            var user = await _userService.GetByEmail(credentials.Email);
+            var user = await _userService.GetByEmailAsync(credentials.Email);
             if (user == null)
             {
                 return NotFound();
@@ -64,7 +64,7 @@ namespace InterviewTest.Api.Controllers
                 new(ClaimTypes.Email, user.Email),
             };
 
-            var token = _jwtService.GenerateToken(claims);
+            var token = _jwtService.GenerateTokenAsync(claims);
             return Ok(token);
         }
     }

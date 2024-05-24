@@ -31,7 +31,7 @@ namespace InterviewTest.Api.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<CountryListDto?> Get(int id)
         {
-            return await _countryService.GetById(id);
+            return await _countryService.GetByIdAsync(id);
         }
 
         [HttpGet()]
@@ -41,7 +41,7 @@ namespace InterviewTest.Api.Controllers
             [FromQuery] int pageSize = 10,
             [FromQuery] string? name = null)
         {
-            return await _countryService.Get(page, pageSize, name);
+            return await _countryService.GetAsync(page, pageSize, name);
         }
 
         [HttpPost()]
@@ -61,7 +61,7 @@ namespace InterviewTest.Api.Controllers
                     );
             }
 
-            await _countryService.Add(country);
+            await _countryService.AddAsync(country);
             return NoContent();
         }
 
@@ -81,7 +81,7 @@ namespace InterviewTest.Api.Controllers
                     );
             }
 
-            await _countryService.Update(country);
+            await _countryService.UpdateAsync(country);
             return NoContent();
         }
     }

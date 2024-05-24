@@ -29,7 +29,7 @@ namespace InterviewTest.Service.Validators
 
             RuleFor(x => x.StockDetailListDtos).MustAsync(async (detail, _) =>
             {
-                var products = await productService.GetByIds(detail.Select(x => x.ProductId).ToList());
+                var products = await productService.GetByIdsAsync(detail.Select(x => x.ProductId).ToList());
                 return products.Count() == detail.Count();
             }).WithMessage($"Invalid products, make sure to add existing products");
         }

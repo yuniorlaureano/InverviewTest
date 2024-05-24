@@ -43,7 +43,7 @@ namespace InterviewTest.Test.Tests.Controller
             var userRepository = new Mock<IUserRepository>();
 
             userService
-                .Setup(x => x.GetByEmail(It.IsAny<string>()))
+                .Setup(x => x.GetByEmailAsync(It.IsAny<string>()))
                 .ReturnsAsync(() => userList);
 
             var services = DependencyBuilder.GetServices((serviceCollection, configuration) =>
@@ -69,7 +69,7 @@ namespace InterviewTest.Test.Tests.Controller
             //Assert
             result.Should().BeOfType<OkObjectResult>();
             var token = (result as OkObjectResult)!.Value!.ToString();
-            var isValid = await jwtService.ValidateToken(token!);
+            var isValid = await jwtService.ValidateTokenAsync(token!);
             token.Should().NotBeNull();
             isValid.Should().BeTrue();
         }
@@ -90,7 +90,7 @@ namespace InterviewTest.Test.Tests.Controller
             var userRepository = new Mock<IUserRepository>();
 
             userService
-                .Setup(x => x.GetByEmail(It.IsAny<string>()))
+                .Setup(x => x.GetByEmailAsync(It.IsAny<string>()))
                 .ReturnsAsync(() => userList);
 
             var services = DependencyBuilder.GetServices((serviceCollection, configuration) =>
@@ -133,7 +133,7 @@ namespace InterviewTest.Test.Tests.Controller
             var userRepository = new Mock<IUserRepository>();
 
             userService
-                .Setup(x => x.GetByEmail(It.IsAny<string>()))
+                .Setup(x => x.GetByEmailAsync(It.IsAny<string>()))
                 .ReturnsAsync(() => null);
 
             var services = DependencyBuilder.GetServices((serviceCollection, configuration) =>
@@ -180,7 +180,7 @@ namespace InterviewTest.Test.Tests.Controller
             var userRepository = new Mock<IUserRepository>();
 
             userService
-                .Setup(x => x.GetByEmail(It.IsAny<string>()))
+                .Setup(x => x.GetByEmailAsync(It.IsAny<string>()))
                 .ReturnsAsync(() => userList);
 
             var services = DependencyBuilder.GetServices((serviceCollection, configuration) =>

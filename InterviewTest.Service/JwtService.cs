@@ -8,8 +8,8 @@ namespace InterviewTest.Service
     public record JwtOptions(string Secret, string Issuer, string Audience, int? ExpiresIn);
     public interface IJwtService
     {
-        string GenerateToken(Claim[] claims);
-        Task<bool> ValidateToken(string token);
+        string GenerateTokenAsync(Claim[] claims);
+        Task<bool> ValidateTokenAsync(string token);
     }
 
     public class JwtService : IJwtService
@@ -20,7 +20,7 @@ namespace InterviewTest.Service
             _jwtOptions = jwtOptions;
         }
 
-        public string GenerateToken(Claim[] claims)
+        public string GenerateTokenAsync(Claim[] claims)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_jwtOptions.Secret);
@@ -41,7 +41,7 @@ namespace InterviewTest.Service
             return tokenHandler.WriteToken(token);
         }
 
-        public async Task<bool> ValidateToken(string token)
+        public async Task<bool> ValidateTokenAsync(string token)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_jwtOptions.Secret);

@@ -99,8 +99,8 @@ namespace InterviewTest.Test.Tests.Validation
                 .Build<ProductCreationDto>()
                 .Create();
 
-            await _productService.Add(product);
-            return (await _productService.Get(name: product.Name)).First();
+            await _productService.AddAsync(product);
+            return (await _productService.GetAsync(name: product.Name)).First();
         }
     }
 }

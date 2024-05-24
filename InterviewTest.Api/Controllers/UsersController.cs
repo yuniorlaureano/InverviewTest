@@ -31,7 +31,7 @@ namespace InterviewTest.Api.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<UserListDto?> Get(int id)
         {
-            return await _userService.GetById(id);
+            return await _userService.GetByIdAsync(id);
         }
 
         [HttpGet()]
@@ -42,7 +42,7 @@ namespace InterviewTest.Api.Controllers
             [FromQuery] byte? age = null,
             [FromQuery] string? country = null)
         {
-            return await _userService.Get(page, pageSize, age, country);
+            return await _userService.GetAsync(page, pageSize, age, country);
         }
 
         [HttpPost()]
@@ -62,7 +62,7 @@ namespace InterviewTest.Api.Controllers
                     );
             }
 
-            await _userService.Add(user);
+            await _userService.AddAsync(user);
             return NoContent();
         }
 
@@ -85,7 +85,7 @@ namespace InterviewTest.Api.Controllers
                 }
             }
 
-            await _userService.Add(users);
+            await _userService.AddAsync(users);
             return NoContent();
         }
 
@@ -105,7 +105,7 @@ namespace InterviewTest.Api.Controllers
                     );
             }
 
-            await _userService.Update(user);
+            await _userService.UpdateAsync(user);
             return NoContent();
         }
 
@@ -113,13 +113,13 @@ namespace InterviewTest.Api.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> Delete(long id)
         {
-            var user = await _userService.GetById(id);
+            var user = await _userService.GetByIdAsync(id);
             if (user is null)
             {
                 return NotFound();
             }
 
-            await _userService.Delete(id);
+            await _userService.DeleteAsync(id);
             return NoContent();
         }
     }

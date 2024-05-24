@@ -7,13 +7,13 @@ namespace InterviewTest.Data
 {
     public interface IUserRepository
     {
-        public Task<TemporalUser?> GetById(long id);
-        Task<TemporalUser?> GetByEmail(string email);
-        public Task<IEnumerable<TemporalUser>> Get(int page = 1, int pageSize = 10, byte? age = null, string? country = null);
-        public Task Add(TemporalUser user);
-        public Task Add(IEnumerable<TemporalUser> user);
-        public Task Update(TemporalUser user);
-        public Task Delete(long id);
+        public Task<TemporalUser?> GetByIdAsync(long id);
+        Task<TemporalUser?> GetByEmailAsync(string email);
+        public Task<IEnumerable<TemporalUser>> GetAsync(int page = 1, int pageSize = 10, byte? age = null, string? country = null);
+        public Task AddAsync(TemporalUser user);
+        public Task AddAsync(IEnumerable<TemporalUser> user);
+        public Task UpdateAsync(TemporalUser user);
+        public Task DeleteAsync(long id);
     }
 
     public class UserRepository : IUserRepository
@@ -25,10 +25,10 @@ namespace InterviewTest.Data
             _adoCommand = adoCommand;
         }
 
-        public async Task<IEnumerable<TemporalUser>> Get(int page = 1, int pageSize = 10, byte? age = null, string? country = null)
+        public async Task<IEnumerable<TemporalUser>> GetAsync(int page = 1, int pageSize = 10, byte? age = null, string? country = null)
         {
             var users = new List<TemporalUser>();
-            await _adoCommand.Execute(async (command) =>
+            await _adoCommand.ExecuteAsync(async (command) =>
             {
                 var filter = _adoCommand.CreateFilterWithCustomParameter(command,
                     new SqlFilterParam("USR.Age", age, SqlDbType.TinyInt, "Age"),
@@ -65,9 +65,9 @@ namespace InterviewTest.Data
             return users;
         }
 
-        public async Task Add(TemporalUser user)
+        public async Task AddAsync(TemporalUser user)
         {
-            await _adoCommand.ExecuteTransaction(async (command, onQuery) =>
+            await _adoCommand.ExecuteTransactionAsync(async (command, onQuery) =>
             {
                 command.CommandText = @"
                     DECLARE 
@@ -133,9 +133,9 @@ namespace InterviewTest.Data
             });
         }
 
-        public async Task Add(IEnumerable<TemporalUser> user)
+        public async Task AddAsync(IEnumerable<TemporalUser> user)
         {
-            await _adoCommand.ExecuteTransaction(async (command, onQuery) =>
+            await _adoCommand.ExecuteTransactionAsync(async (command, onQuery) =>
             {
                 command.CommandText = @"
                     CREATE TABLE #TempUser (
@@ -249,9 +249,9 @@ namespace InterviewTest.Data
             });
         }
 
-        public async Task Update(TemporalUser user)
+        public async Task UpdateAsync(TemporalUser user)
         {
-            await _adoCommand.ExecuteTransaction(async (command, onQuery) =>
+            await _adoCommand.ExecuteTransactionAsync(async (command, onQuery) =>
             {
                 command.CommandText = @$"
                     DECLARE 
@@ -306,10 +306,10 @@ namespace InterviewTest.Data
             });
         }
 
-        public async Task<TemporalUser?> GetById(long id)
+        public async Task<TemporalUser?> GetByIdAsync(long id)
         {
             TemporalUser? user = null;
-            await _adoCommand.Execute(async (command) =>
+            await _adoCommand.ExecuteAsync(async (command) =>
             {
                 command.Parameters.Add(_adoCommand.CreateParam($"@{nameof(User.Id)}", id, SqlDbType.BigInt));
                 command.CommandText = @$"
@@ -340,10 +340,10 @@ namespace InterviewTest.Data
             return user;
         }
 
-        public async Task<TemporalUser?> GetByEmail(string email)
+        public async Task<TemporalUser?> GetByEmailAsync(string email)
         {
             TemporalUser? user = null;
-            await _adoCommand.Execute(async (command) =>
+            await _adoCommand.ExecuteAsync(async (command) =>
             {
                 command.Parameters.Add(_adoCommand.CreateParam($"@{nameof(User.Email)}", email, SqlDbType.NVarChar));
                 command.CommandText = @$"
@@ -375,9 +375,9 @@ namespace InterviewTest.Data
             return user;
         }
 
-        public async Task Delete(long id)
+        public async Task DeleteAsync(long id)
         {
-            await _adoCommand.Execute(async (command) =>
+            await _adoCommand.ExecuteAsync(async (command) =>
             {
                 command.Parameters.Add(_adoCommand.CreateParam($"@{nameof(User.Id)}", id, SqlDbType.BigInt));
                 command.CommandText = $"DELETE FROM [{nameof(User)}] WHERE Id = @Id";

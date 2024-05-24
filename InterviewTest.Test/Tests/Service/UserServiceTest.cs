@@ -37,8 +37,8 @@ namespace InterviewTest.Test.Tests.Service
 
             });
 
-            await _userService.Add(users!);
-            var insertedUsers = await _userService.Get(pageSize: 1000);
+            await _userService.AddAsync(users!);
+            var insertedUsers = await _userService.GetAsync(pageSize: 1000);
 
             Assert.True(insertedUsers.Any());
             Assert.Equal(1000, insertedUsers.Count());
@@ -51,16 +51,16 @@ namespace InterviewTest.Test.Tests.Service
                 .Build<UserCreationDto>()
                 .Create();
 
-            await _userService.Add(user);
+            await _userService.AddAsync(user);
 
-            var insertedUser = (await _userService.Get(country: user.Country)).First();
+            var insertedUser = (await _userService.GetAsync(country: user.Country)).First();
 
             insertedUser.LastName = "Modified " + Guid.NewGuid();
 
             var userUpdate = _mapper.Map<UserUpdateDto>(insertedUser);
-            await _userService.Update(userUpdate);
+            await _userService.UpdateAsync(userUpdate);
 
-            var updatedUser = await _userService.GetById(insertedUser.Id);
+            var updatedUser = await _userService.GetByIdAsync(insertedUser.Id);
 
             Assert.Equal(updatedUser.LastName, insertedUser.LastName);
         }
@@ -72,9 +72,9 @@ namespace InterviewTest.Test.Tests.Service
                 .Build<UserCreationDto>()
                 .Create();
 
-            await _userService.Add(user);
+            await _userService.AddAsync(user);
 
-            var insertedUser = (await _userService.Get(country: user.Country)).First();
+            var insertedUser = (await _userService.GetAsync(country: user.Country)).First();
 
             Assert.NotNull(insertedUser);
         }
@@ -86,11 +86,11 @@ namespace InterviewTest.Test.Tests.Service
                 .Build<UserCreationDto>()
                 .Create();
 
-            await _userService.Add(user);
+            await _userService.AddAsync(user);
 
-            var insertedUser = (await _userService.Get(country: user.Country)).First();
+            var insertedUser = (await _userService.GetAsync(country: user.Country)).First();
 
-            var userById = await _userService.GetById(insertedUser.Id);
+            var userById = await _userService.GetByIdAsync(insertedUser.Id);
 
             Assert.NotNull(userById);
         }
@@ -102,9 +102,9 @@ namespace InterviewTest.Test.Tests.Service
                 .Build<UserCreationDto>()
                 .Create();
 
-            await _userService.Add(user);
+            await _userService.AddAsync(user);
 
-            var userByEmaail = await _userService.GetByEmail(user.Email);
+            var userByEmaail = await _userService.GetByEmailAsync(user.Email);
 
             Assert.NotNull(userByEmaail);
         }
@@ -118,12 +118,12 @@ namespace InterviewTest.Test.Tests.Service
             .With(x => x.Password, "admin")
                 .Create();
 
-            var existingUser = await _userService.GetByEmail(user.Email);
+            var existingUser = await _userService.GetByEmailAsync(user.Email);
             if (existingUser is null)
             {
-                await _userService.Add(user);
+                await _userService.AddAsync(user);
             }
-            var insertedUser = await _userService.GetByEmail(user.Email);
+            var insertedUser = await _userService.GetByEmailAsync(user.Email);
 
             Assert.NotNull(insertedUser);
         }

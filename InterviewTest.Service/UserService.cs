@@ -8,13 +8,13 @@ namespace InterviewTest.Service
 {
     public interface IUserService
     {
-        public Task<UserListDto?> GetById(long id);
-        Task<UserListDto?> GetByEmail(string email);
-        public Task<IEnumerable<UserListDto>> Get(int page = 1, int pageSize = 10, byte? age = null, string? country = null);
-        public Task Add(UserCreationDto userDto);
-        public Task Add(IEnumerable<UserCreationDto> userDtos);
-        public Task Update(UserUpdateDto userDto);
-        public Task Delete(long id);
+        public Task<UserListDto?> GetByIdAsync(long id);
+        Task<UserListDto?> GetByEmailAsync(string email);
+        public Task<IEnumerable<UserListDto>> GetAsync(int page = 1, int pageSize = 10, byte? age = null, string? country = null);
+        public Task AddAsync(UserCreationDto userDto);
+        public Task AddAsync(IEnumerable<UserCreationDto> userDtos);
+        public Task UpdateAsync(UserUpdateDto userDto);
+        public Task DeleteAsync(long id);
     }
 
     public class UserService : IUserService
@@ -28,46 +28,46 @@ namespace InterviewTest.Service
             _mapper = mapper;
         }
 
-        public async Task Add(UserCreationDto userDto)
+        public async Task AddAsync(UserCreationDto userDto)
         {
             var user = _mapper.Map<TemporalUser>(userDto);
             user.Password = PasswordHasher.HashPassword(userDto.Password);
-            await _userRepository.Add(user);
+            await _userRepository.AddAsync(user);
         }
 
-        public async Task Add(IEnumerable<UserCreationDto> userDtos)
+        public async Task AddAsync(IEnumerable<UserCreationDto> userDtos)
         {
             var users = _mapper.Map<IEnumerable<TemporalUser>>(userDtos);
-            await _userRepository.Add(users);
+            await _userRepository.AddAsync(users);
         }
 
-        public async Task Delete(long id)
+        public async Task DeleteAsync(long id)
         {
-            await _userRepository.Delete(id);
+            await _userRepository.DeleteAsync(id);
         }
 
-        public async Task<UserListDto?> GetById(long id)
+        public async Task<UserListDto?> GetByIdAsync(long id)
         {
-            var user = await _userRepository.GetById(id);
+            var user = await _userRepository.GetByIdAsync(id);
             return _mapper.Map<UserListDto>(user);
         }
 
-        public async Task<UserListDto?> GetByEmail(string email)
+        public async Task<UserListDto?> GetByEmailAsync(string email)
         {
-            var user = await _userRepository.GetByEmail(email);
+            var user = await _userRepository.GetByEmailAsync(email);
             return _mapper.Map<UserListDto>(user);
         }
 
-        public async Task<IEnumerable<UserListDto>> Get(int page = 1, int pageSize = 10, byte? age = null, string? country = null)
+        public async Task<IEnumerable<UserListDto>> GetAsync(int page = 1, int pageSize = 10, byte? age = null, string? country = null)
         {
-            var users = await _userRepository.Get(page, pageSize, age, country);
+            var users = await _userRepository.GetAsync(page, pageSize, age, country);
             return _mapper.Map<IEnumerable<UserListDto>>(users);
         }
 
-        public async Task Update(UserUpdateDto userDtos)
+        public async Task UpdateAsync(UserUpdateDto userDtos)
         {
             var user = _mapper.Map<TemporalUser>(userDtos);
-            await _userRepository.Update(user);
+            await _userRepository.UpdateAsync(user);
         }
     }
 }

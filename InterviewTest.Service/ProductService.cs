@@ -7,12 +7,12 @@ namespace InterviewTest.Service
 {
     public interface IProductService
     {
-        public Task<ProductListDto?> GetById(long id);
-        Task<IEnumerable<ProductListDto>> GetByIds(List<long> ids);
-        Task<IEnumerable<ProductListDto>> Get(int page = 1, int pageSize = 10, string? code = null, string? name = null);
-        public Task Add(ProductCreationDto productDto);
-        public Task Update(ProductUpdateDto productDto);
-        public Task Delete(long id);
+        public Task<ProductListDto?> GetByIdAsync(long id);
+        Task<IEnumerable<ProductListDto>> GetByIdsAsync(List<long> ids);
+        Task<IEnumerable<ProductListDto>> GetAsync(int page = 1, int pageSize = 10, string? code = null, string? name = null);
+        public Task AddAsync(ProductCreationDto productDto);
+        public Task UpdateAsync(ProductUpdateDto productDto);
+        public Task DeleteAsync(long id);
     }
 
     public class ProductService : IProductService
@@ -26,39 +26,39 @@ namespace InterviewTest.Service
             _mapper = mapper;
         }
 
-        public async Task Add(ProductCreationDto productDto)
+        public async Task AddAsync(ProductCreationDto productDto)
         {
             var product = _mapper.Map<Product>(productDto);
-            await _productRepository.Add(product);
+            await _productRepository.AddAsync(product);
         }
 
-        public async Task Delete(long id)
+        public async Task DeleteAsync(long id)
         {
-            await _productRepository.Delete(id);
+            await _productRepository.DeleteAsync(id);
         }
 
-        public async Task<ProductListDto?> GetById(long id)
+        public async Task<ProductListDto?> GetByIdAsync(long id)
         {
-            var product = await _productRepository.GetById(id);
+            var product = await _productRepository.GetByIdAsync(id);
             return _mapper.Map<ProductListDto>(product);
         }
 
-        public async Task<IEnumerable<ProductListDto>> GetByIds(List<long> ids)
+        public async Task<IEnumerable<ProductListDto>> GetByIdsAsync(List<long> ids)
         {
-            var products = await _productRepository.GetByIds(ids);
+            var products = await _productRepository.GetByIdsAsync(ids);
             return _mapper.Map<IEnumerable<ProductListDto>>(products);
         }
 
-        public async Task<IEnumerable<ProductListDto>> Get(int page = 1, int pageSize = 10, string? code = null, string? name = null)
+        public async Task<IEnumerable<ProductListDto>> GetAsync(int page = 1, int pageSize = 10, string? code = null, string? name = null)
         {
-            var products = await _productRepository.Get(page, pageSize, code, name);
+            var products = await _productRepository.GetAsync(page, pageSize, code, name);
             return _mapper.Map<IEnumerable<ProductListDto>>(products);
         }
 
-        public async Task Update(ProductUpdateDto productDtos)
+        public async Task UpdateAsync(ProductUpdateDto productDtos)
         {
             var product = _mapper.Map<Product>(productDtos);
-            await _productRepository.Update(product);
+            await _productRepository.UpdateAsync(product);
         }
     }
 }

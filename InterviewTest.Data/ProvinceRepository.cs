@@ -7,10 +7,10 @@ namespace InterviewTest.Data
 {
     public interface IProvinceRepository
     {
-        public Task<ProvinceDetail?> GetById(long id);
-        public Task<IEnumerable<ProvinceDetail>> Get(int page = 1, int pageSize = 10, string? name = null, string? province = null);
-        public Task Add(Province Province);
-        public Task Update(Province Province);
+        public Task<ProvinceDetail?> GetByIdAsync(long id);
+        public Task<IEnumerable<ProvinceDetail>> GetAsync(int page = 1, int pageSize = 10, string? name = null, string? province = null);
+        public Task AddAsync(Province Province);
+        public Task UpdateAsync(Province Province);
     }
 
     public class ProvinceRepository : IProvinceRepository
@@ -22,9 +22,9 @@ namespace InterviewTest.Data
             _adoCommand = adoCommand;
         }
 
-        public async Task Add(Province province)
+        public async Task AddAsync(Province province)
         {
-            await _adoCommand.Execute(async (command) =>
+            await _adoCommand.ExecuteAsync(async (command) =>
             {
                 command.CommandText = @$"
                     INSERT INTO [{nameof(Province)}]
@@ -38,10 +38,10 @@ namespace InterviewTest.Data
             });
         }
 
-        public async Task<ProvinceDetail?> GetById(long id)
+        public async Task<ProvinceDetail?> GetByIdAsync(long id)
         {
             ProvinceDetail? province = null;
-            await _adoCommand.Execute(async (command) =>
+            await _adoCommand.ExecuteAsync(async (command) =>
             {
                 command.Parameters.Add(_adoCommand.CreateParam($"@{nameof(Province.Id)}", id, SqlDbType.BigInt));
                 command.CommandText = @$"SELECT P.Id, P.[Name], C.[Name] AS Country, P.[CountryId] 
@@ -59,10 +59,10 @@ namespace InterviewTest.Data
             return province;
         }
 
-        public async Task<IEnumerable<ProvinceDetail>> Get(int page = 1, int pageSize = 10, string? name = null, string? country = null)
+        public async Task<IEnumerable<ProvinceDetail>> GetAsync(int page = 1, int pageSize = 10, string? name = null, string? country = null)
         {
             var provinces = new List<ProvinceDetail>();
-            await _adoCommand.Execute(async (command) =>
+            await _adoCommand.ExecuteAsync(async (command) =>
             {
                 var filter = _adoCommand.CreateFilterWithCustomParameter(command,
                     new SqlFilterParam("P.[Name]", name, SqlDbType.NVarChar, "ProvinceName"),
@@ -87,9 +87,9 @@ namespace InterviewTest.Data
             return provinces;
         }
 
-        public async Task Update(Province Province)
+        public async Task UpdateAsync(Province Province)
         {
-            await _adoCommand.Execute(async (command) =>
+            await _adoCommand.ExecuteAsync(async (command) =>
             {
                 command.CommandText = @$"UPDATE [{nameof(Province)}]
                    SET 

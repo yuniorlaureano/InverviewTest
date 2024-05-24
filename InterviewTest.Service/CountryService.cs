@@ -7,10 +7,10 @@ namespace InterviewTest.Service
 {
     public interface ICountryService
     {
-        public Task<CountryListDto?> GetById(long id);
-        Task<IEnumerable<CountryListDto>> Get(int page = 1, int pageSize = 10, string? name = null);
-        public Task Add(CountryCreationDto countryDto);
-        public Task Update(CountryUpdateDto countryDto);
+        public Task<CountryListDto?> GetByIdAsync(long id);
+        Task<IEnumerable<CountryListDto>> GetAsync(int page = 1, int pageSize = 10, string? name = null);
+        public Task AddAsync(CountryCreationDto countryDto);
+        public Task UpdateAsync(CountryUpdateDto countryDto);
     }
 
     public class CountryService : ICountryService
@@ -24,28 +24,28 @@ namespace InterviewTest.Service
             _mapper = mapper;
         }
 
-        public async Task Add(CountryCreationDto countryDto)
+        public async Task AddAsync(CountryCreationDto countryDto)
         {
             var country = _mapper.Map<Country>(countryDto);
-            await _countryRepository.Add(country);
+            await _countryRepository.AddAsync(country);
         }
 
-        public async Task<CountryListDto?> GetById(long id)
+        public async Task<CountryListDto?> GetByIdAsync(long id)
         {
-            var country = await _countryRepository.GetById(id);
+            var country = await _countryRepository.GetByIdAsync(id);
             return _mapper.Map<CountryListDto>(country);
         }
 
-        public async Task<IEnumerable<CountryListDto>> Get(int page = 1, int pageSize = 10, string? name = null)
+        public async Task<IEnumerable<CountryListDto>> GetAsync(int page = 1, int pageSize = 10, string? name = null)
         {
-            var countrys = await _countryRepository.Get(page, pageSize, name);
+            var countrys = await _countryRepository.GetAsync(page, pageSize, name);
             return _mapper.Map<IEnumerable<CountryListDto>>(countrys);
         }
 
-        public async Task Update(CountryUpdateDto countryDtos)
+        public async Task UpdateAsync(CountryUpdateDto countryDtos)
         {
             var country = _mapper.Map<Country>(countryDtos);
-            await _countryRepository.Update(country);
+            await _countryRepository.UpdateAsync(country);
         }
     }
 }

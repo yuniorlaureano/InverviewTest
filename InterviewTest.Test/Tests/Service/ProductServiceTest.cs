@@ -19,8 +19,8 @@ namespace InterviewTest.Test.Tests.Service
         {
             await _inventoryServiceTestFixture.MockProduct();
 
-            var insertedId = (await _inventoryServiceTestFixture.ProductService.Get()).FirstOrDefault()?.Id;
-            var insertedProduct = await _inventoryServiceTestFixture.ProductService.GetById(insertedId ?? 0);
+            var insertedId = (await _inventoryServiceTestFixture.ProductService.GetAsync()).FirstOrDefault()?.Id;
+            var insertedProduct = await _inventoryServiceTestFixture.ProductService.GetByIdAsync(insertedId ?? 0);
 
             Assert.NotNull(insertedProduct);
         }
@@ -30,7 +30,7 @@ namespace InterviewTest.Test.Tests.Service
         {
             await _inventoryServiceTestFixture.MockProduct();
 
-            var insertedProducts = await _inventoryServiceTestFixture.ProductService.Get();
+            var insertedProducts = await _inventoryServiceTestFixture.ProductService.GetAsync();
             Assert.True(insertedProducts.Any());
         }
 
@@ -40,7 +40,7 @@ namespace InterviewTest.Test.Tests.Service
             var products = await _inventoryServiceTestFixture.MockProducts();
 
             var productByIds =
-                await _inventoryServiceTestFixture.ProductService.GetByIds(
+                await _inventoryServiceTestFixture.ProductService.GetByIdsAsync(
                     products.Select(x => x.Id).ToList());
 
             Assert.True(productByIds.Any());
@@ -51,7 +51,7 @@ namespace InterviewTest.Test.Tests.Service
         public async Task Should_Get_Product_By_Code()
         {
             var product = await _inventoryServiceTestFixture.MockProduct();
-            var insertedProducts = await _inventoryServiceTestFixture.ProductService.Get(code: product.Code);
+            var insertedProducts = await _inventoryServiceTestFixture.ProductService.GetAsync(code: product.Code);
 
             Assert.True(insertedProducts.Any());
         }
@@ -61,7 +61,7 @@ namespace InterviewTest.Test.Tests.Service
         {
             var product = await _inventoryServiceTestFixture.MockProduct();
 
-            var insertedProducts = await _inventoryServiceTestFixture.ProductService.Get(name: product.Name);
+            var insertedProducts = await _inventoryServiceTestFixture.ProductService.GetAsync(name: product.Name);
 
             Assert.True(insertedProducts.Any());
         }
@@ -71,7 +71,7 @@ namespace InterviewTest.Test.Tests.Service
         {
             var product = await _inventoryServiceTestFixture.MockProduct();
 
-            var insertedProducts = await _inventoryServiceTestFixture.ProductService.Get(code: product.Code, name: product.Name);
+            var insertedProducts = await _inventoryServiceTestFixture.ProductService.GetAsync(code: product.Code, name: product.Name);
 
             Assert.True(insertedProducts.Any());
         }
@@ -81,7 +81,7 @@ namespace InterviewTest.Test.Tests.Service
         {
             var product = await _inventoryServiceTestFixture.MockProduct();
 
-            var insertedProduct = await _inventoryServiceTestFixture.ProductService.Get(code: product.Code);
+            var insertedProduct = await _inventoryServiceTestFixture.ProductService.GetAsync(code: product.Code);
 
             Assert.NotNull(insertedProduct);
             Assert.Equal(insertedProduct.First().Code, product.Code);
@@ -92,15 +92,15 @@ namespace InterviewTest.Test.Tests.Service
         {
             var product = await _inventoryServiceTestFixture.MockProduct();
 
-            var insertedProducts = await _inventoryServiceTestFixture.ProductService.Get(code: product.Code);
+            var insertedProducts = await _inventoryServiceTestFixture.ProductService.GetAsync(code: product.Code);
             var insertedProduct = insertedProducts.First();
 
             var productToUpdate = _inventoryServiceTestFixture.Mapper.Map<ProductUpdateDto>(insertedProduct);
 
             productToUpdate.Code = Guid.NewGuid().ToString();
-            await _inventoryServiceTestFixture.ProductService.Update(productToUpdate);
+            await _inventoryServiceTestFixture.ProductService.UpdateAsync(productToUpdate);
 
-            var updatedProduct = await _inventoryServiceTestFixture.ProductService.GetById(productToUpdate.Id);
+            var updatedProduct = await _inventoryServiceTestFixture.ProductService.GetByIdAsync(productToUpdate.Id);
 
             Assert.NotNull(updatedProduct);
             Assert.Equal(updatedProduct.Code, productToUpdate.Code);
@@ -111,12 +111,12 @@ namespace InterviewTest.Test.Tests.Service
         {
             var product = await _inventoryServiceTestFixture.MockProduct();
 
-            var insertedProducts = await _inventoryServiceTestFixture.ProductService.Get(code: product.Code);
+            var insertedProducts = await _inventoryServiceTestFixture.ProductService.GetAsync(code: product.Code);
             var insertedProduct = insertedProducts.First();
 
-            var beforeRemove = await _inventoryServiceTestFixture.ProductService.GetById(insertedProduct.Id);
-            await _inventoryServiceTestFixture.ProductService.Delete(insertedProduct.Id);
-            var afterRemove = await _inventoryServiceTestFixture.ProductService.GetById(insertedProduct.Id);
+            var beforeRemove = await _inventoryServiceTestFixture.ProductService.GetByIdAsync(insertedProduct.Id);
+            await _inventoryServiceTestFixture.ProductService.DeleteAsync(insertedProduct.Id);
+            var afterRemove = await _inventoryServiceTestFixture.ProductService.GetByIdAsync(insertedProduct.Id);
 
             Assert.NotNull(beforeRemove);
             Assert.Null(afterRemove);
@@ -132,10 +132,10 @@ namespace InterviewTest.Test.Tests.Service
 
             foreach (var product in products)
             {
-                await _inventoryServiceTestFixture.ProductService.Add(product!);
+                await _inventoryServiceTestFixture.ProductService.AddAsync(product!);
             }
 
-            var insertedProducts = await _inventoryServiceTestFixture.ProductService.Get(pageSize: 5);
+            var insertedProducts = await _inventoryServiceTestFixture.ProductService.GetAsync(pageSize: 5);
 
             Assert.True(insertedProducts.Any());
             Assert.True(insertedProducts.Count() == 5);

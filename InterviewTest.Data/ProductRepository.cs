@@ -7,12 +7,12 @@ namespace InterviewTest.Data
 {
     public interface IProductRepository
     {
-        public Task<Product?> GetById(long id);
-        Task<IEnumerable<Product>> GetByIds(List<long> ids);
-        public Task<IEnumerable<Product>> Get(int page = 1, int pageSize = 10, string? code = null, string? name = null);
-        public Task Add(Product product);
-        public Task Update(Product product);
-        public Task Delete(long id);
+        public Task<Product?> GetByIdAsync(long id);
+        Task<IEnumerable<Product>> GetByIdsAsync(List<long> ids);
+        public Task<IEnumerable<Product>> GetAsync(int page = 1, int pageSize = 10, string? code = null, string? name = null);
+        public Task AddAsync(Product product);
+        public Task UpdateAsync(Product product);
+        public Task DeleteAsync(long id);
     }
 
     public class ProductRepository : IProductRepository
@@ -24,9 +24,9 @@ namespace InterviewTest.Data
             _adoCommand = adoCommand;
         }
 
-        public async Task Add(Product product)
+        public async Task AddAsync(Product product)
         {
-            await _adoCommand.Execute(async (command) =>
+            await _adoCommand.ExecuteAsync(async (command) =>
             {
                 command.CommandText = @$"INSERT INTO [{nameof(Product)}]
                     {_adoCommand.GenerateInsertColumnsBody(
@@ -41,9 +41,9 @@ namespace InterviewTest.Data
             });
         }
 
-        public async Task Delete(long id)
+        public async Task DeleteAsync(long id)
         {
-            await _adoCommand.Execute(async (command) =>
+            await _adoCommand.ExecuteAsync(async (command) =>
             {
                 command.Parameters.Add(_adoCommand.CreateParam($"@{nameof(Product.Id)}", id, SqlDbType.BigInt));
                 command.CommandText = $"DELETE FROM [{nameof(Product)}] WHERE Id = @Id";
@@ -51,10 +51,10 @@ namespace InterviewTest.Data
             });
         }
 
-        public async Task<Product?> GetById(long id)
+        public async Task<Product?> GetByIdAsync(long id)
         {
             Product? product = null;
-            await _adoCommand.Execute(async (command) =>
+            await _adoCommand.ExecuteAsync(async (command) =>
             {
                 command.Parameters.Add(_adoCommand.CreateParam($"@{nameof(product.Id)}", id, SqlDbType.BigInt));
                 command.CommandText = $"SELECT * FROM  [{nameof(Product)}] WHERE {nameof(product.Id)} = @{nameof(product.Id)}";
@@ -69,7 +69,7 @@ namespace InterviewTest.Data
             return product;
         }
 
-        public async Task<IEnumerable<Product>> GetByIds(List<long> ids)
+        public async Task<IEnumerable<Product>> GetByIdsAsync(List<long> ids)
         {
             var products = new List<Product>();
 
@@ -78,7 +78,7 @@ namespace InterviewTest.Data
                 return products;
             }
 
-            await _adoCommand.Execute(async (command) =>
+            await _adoCommand.ExecuteAsync(async (command) =>
             {
                 var inFilter = _adoCommand.CreateInFilter(command,
                     ids.Select(id => new SqlFilterParam(nameof(Product.Id), id, SqlDbType.BigInt)).ToArray()
@@ -96,10 +96,10 @@ namespace InterviewTest.Data
             return products;
         }
 
-        public async Task<IEnumerable<Product>> Get(int page = 1, int pageSize = 10, string? code = null, string? name = null)
+        public async Task<IEnumerable<Product>> GetAsync(int page = 1, int pageSize = 10, string? code = null, string? name = null)
         {
             var products = new List<Product>();
-            await _adoCommand.Execute(async (command) =>
+            await _adoCommand.ExecuteAsync(async (command) =>
             {
                 var filter = _adoCommand.CreateFilter(command,
                     new SqlFilterParam(nameof(Product.Code), code, SqlDbType.NVarChar),
@@ -120,9 +120,9 @@ namespace InterviewTest.Data
             return products;
         }
 
-        public async Task Update(Product product)
+        public async Task UpdateAsync(Product product)
         {
-            await _adoCommand.Execute(async (command) =>
+            await _adoCommand.ExecuteAsync(async (command) =>
             {
                 command.CommandText = @$"UPDATE [{nameof(Product)}]
                    SET 

@@ -6,7 +6,7 @@ namespace InterviewTest.Data
 {
     public interface ISqlFactory
     {
-        Task<IInterviewTestDataBaseConnection> GetConnection();
+        Task<IInterviewTestDataBaseConnection> GetConnectionAsync();
     }
 
     public class SqlFactory : ISqlFactory
@@ -18,7 +18,7 @@ namespace InterviewTest.Data
             ConnectionString = configuration.GetConnectionString("InterviewTest");
         }
 
-        public async Task<IInterviewTestDataBaseConnection> GetConnection()
+        public async Task<IInterviewTestDataBaseConnection> GetConnectionAsync()
         {
             var connection = new InterviewTestDataBaseConnection(ConnectionString);
             await connection.OpenAsync();

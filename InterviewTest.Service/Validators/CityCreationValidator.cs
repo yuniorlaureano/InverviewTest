@@ -13,14 +13,14 @@ namespace InterviewTest.Service.Validators
                .MaximumLength(50)
                .MustAsync(async (name, token) =>
                {
-                   return !(await cityService.Get(name: name)).Any();
+                   return !(await cityService.GetAsync(name: name)).Any();
                }).WithMessage("The city already exist");
 
             RuleFor(x => x.ProvinceId)
                 .NotNull()
                 .MustAsync(async (province, token) =>
                 {
-                    return (await provinceService.GetById(province)) is not null;
+                    return (await provinceService.GetByIdAsync(province)) is not null;
                 }).WithMessage("The province does not exist");
 
         }

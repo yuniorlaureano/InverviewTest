@@ -176,7 +176,7 @@ namespace InterviewTest.Test.Tests.Data
                 .Returns(dbCommand.Object);
 
             sqlFactory
-                .Setup(x => x.GetConnection())
+                .Setup(x => x.GetConnectionAsync())
                 .ReturnsAsync(dbConnection.Object);
 
             var services = DependencyBuilder.GetServices((collection, _) =>
@@ -188,7 +188,7 @@ namespace InterviewTest.Test.Tests.Data
             var aDOCcommand = services.GetRequiredService<IADOCommand>();
 
             //Act
-            await aDOCcommand.Execute(async (command) =>
+            await aDOCcommand.ExecuteAsync(async (command) =>
             {
                 await command.ExecuteNonQueryAsync();
                 await Task.FromResult(0);

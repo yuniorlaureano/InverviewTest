@@ -31,7 +31,7 @@ namespace InterviewTest.Api.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<ProductListDto?> Get(int id)
         {
-            return await _productService.GetById(id);
+            return await _productService.GetByIdAsync(id);
         }
 
         [HttpGet()]
@@ -42,7 +42,7 @@ namespace InterviewTest.Api.Controllers
             [FromQuery] string? code = null,
             [FromQuery] string? name = null)
         {
-            return await _productService.Get(page, pageSize, code, name);
+            return await _productService.GetAsync(page, pageSize, code, name);
         }
 
         [HttpPost()]
@@ -62,7 +62,7 @@ namespace InterviewTest.Api.Controllers
                     );
             }
 
-            await _productService.Add(product);
+            await _productService.AddAsync(product);
             return NoContent();
         }
 
@@ -82,7 +82,7 @@ namespace InterviewTest.Api.Controllers
                     );
             }
 
-            await _productService.Update(product);
+            await _productService.UpdateAsync(product);
             return NoContent();
         }
 
@@ -90,7 +90,7 @@ namespace InterviewTest.Api.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> Delete(long id)
         {
-            await _productService.Delete(id);
+            await _productService.DeleteAsync(id);
             return NoContent();
         }
     }

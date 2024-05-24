@@ -30,7 +30,7 @@ namespace InterviewTest.Test.Fixtures
                 .Build<UserCreationDto>()
                 .Create();
 
-            await UserService.Add(user);
+            await UserService.AddAsync(user);
             return user;
         }
 

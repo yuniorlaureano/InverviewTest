@@ -16,14 +16,14 @@ namespace InterviewTest.Service.Validators
                 .NotNull()
                 .MustAsync(async (id, token) =>
                 {
-                    return (await cityService.GetById(id)) is not null;
+                    return (await cityService.GetByIdAsync(id)) is not null;
                 }).WithMessage("The city does not exist");
 
             RuleFor(x => x.ProvinceId)
                 .NotNull()
                 .MustAsync(async (provinceId, token) =>
                 {
-                    return (await provinceService.GetById(provinceId)) is not null;
+                    return (await provinceService.GetByIdAsync(provinceId)) is not null;
                 }).WithMessage("The province does not exist");
 
         }

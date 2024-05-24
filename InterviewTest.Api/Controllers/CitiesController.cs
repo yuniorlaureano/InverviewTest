@@ -31,7 +31,7 @@ namespace InterviewTest.Api.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<CityListDto?> Get(int id)
         {
-            return await _cityService.GetById(id);
+            return await _cityService.GetByIdAsync(id);
         }
 
         [HttpGet()]
@@ -42,7 +42,7 @@ namespace InterviewTest.Api.Controllers
             [FromQuery] string? name = null,
             [FromQuery] string? province = null)
         {
-            return await _cityService.Get(page, pageSize, name, province);
+            return await _cityService.GetAsync(page, pageSize, name, province);
         }
 
         [HttpPost()]
@@ -62,7 +62,7 @@ namespace InterviewTest.Api.Controllers
                     );
             }
 
-            await _cityService.Add(city);
+            await _cityService.AddAsync(city);
             return NoContent();
         }
 
@@ -82,7 +82,7 @@ namespace InterviewTest.Api.Controllers
                     );
             }
 
-            await _cityService.Update(city);
+            await _cityService.UpdateAsync(city);
             return NoContent();
         }
     }
