@@ -1,7 +1,7 @@
 using AutoFixture;
 using AutoMapper;
 using InterviewTest.Common.Dto;
-using InterviewTest.Service;
+using InterviewTest.Service.Interfaces;
 using InterviewTest.Test.Util;
 using Microsoft.Extensions.DependencyInjection;
 

@@ -1,5 +1,7 @@
 ﻿using FluentValidation;
+using InterviewTest.Common;
 using InterviewTest.Common.Dto;
+using InterviewTest.Service.Interfaces;
 using InterviewTest.Service.Validators;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;

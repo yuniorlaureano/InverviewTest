@@ -1,18 +1,12 @@
-﻿using InterviewTest.Entity;
+﻿using InterviewTest.Data.Decorators;
+using InterviewTest.Data.Interfaces;
+using InterviewTest.Entity;
 using Microsoft.Data.SqlClient;
 using System.Data;
 using System.Text;
 
 namespace InterviewTest.Data
 {
-    public interface ICityRepository
-    {
-        public Task<CityDetail?> GetByIdAsync(long id);
-        public Task<IEnumerable<CityDetail>> GetAsync(int page = 1, int pageSize = 10, string? name = null, string? province = null);
-        public Task AddAsync(City City);
-        public Task UpdateAsync(City City);
-    }
-
     public class CityRepository : ICityRepository
     {
         private readonly IADOCommand _adoCommand;

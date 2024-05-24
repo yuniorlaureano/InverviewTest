@@ -1,17 +1,12 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿using InterviewTest.Common;
+using InterviewTest.Service.Interfaces;
+using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
 namespace InterviewTest.Service
 {
-    public record JwtOptions(string Secret, string Issuer, string Audience, int? ExpiresIn);
-    public interface IJwtService
-    {
-        string GenerateTokenAsync(Claim[] claims);
-        Task<bool> ValidateTokenAsync(string token);
-    }
-
     public class JwtService : IJwtService
     {
         private readonly JwtOptions _jwtOptions;

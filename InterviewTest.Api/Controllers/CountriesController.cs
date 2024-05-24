@@ -1,9 +1,9 @@
 ﻿using FluentValidation;
 using InterviewTest.Common.Dto;
-using InterviewTest.Service;
 using Microsoft.AspNetCore.Mvc;
 using InterviewTest.Api.Util;
 using Microsoft.AspNetCore.Authorization;
+using InterviewTest.Service.Interfaces;
 
 namespace InterviewTest.Api.Controllers
 {

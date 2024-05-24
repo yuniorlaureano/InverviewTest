@@ -1,9 +1,9 @@
 ﻿using AutoFixture;
 using AutoMapper;
 using InterviewTest.Common.Dto;
-using InterviewTest.Data;
+using InterviewTest.Data.Interfaces;
 using InterviewTest.Entity;
-using InterviewTest.Service;
+using InterviewTest.Service.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace InterviewTest.Test.Fixtures

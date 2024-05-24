@@ -1,14 +1,10 @@
-﻿using InterviewTest.Entity;
+﻿using InterviewTest.Data.Interfaces;
+using InterviewTest.Entity;
 using Microsoft.Data.SqlClient;
 using System.Data;
 
 namespace InterviewTest.Data
 {
-    public interface IStockDetailRepository
-    {
-        Task<IEnumerable<StockDetail>> GetByStockIdAsync(long stockId);
-    }
-
     public class StockDetailRepository : IStockDetailRepository
     {
         private readonly IADOCommand _adoCommand;

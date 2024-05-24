@@ -1,4 +1,6 @@
 ﻿using InterviewTest.Common;
+using InterviewTest.Data.Decorators;
+using InterviewTest.Data.Interfaces;
 using InterviewTest.Entity;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Logging;
@@ -7,27 +9,19 @@ using System.Text;
 
 namespace InterviewTest.Data
 {
-    public interface ICountryRepository
-    {
-        public Task<ExecutionResult<Country?>> GetByIdAsync(long id);
-        public Task<ExecutionResult<IEnumerable<Country>>> GetAsync(int page = 1, int pageSize = 10, string? name = null);
-        public Task<ExecutionResult> AddAsync(Country Country);
-        public Task<ExecutionResult> UpdateAsync(Country Country);
-    }
-
     public class CountryRepository : ICountryRepository
     {
         private readonly IADOCommand _adoCommand;
-        private readonly IExecutionResultFactory _executionResult;
+        private readonly IExecutionResultFactory _resultFactory;
         private readonly ILogger<CountryRepository> _logger;
 
         public CountryRepository(
             IADOCommand adoCommand,
-            IExecutionResultFactory executionResult,
+            IExecutionResultFactory resultFactory,
             ILogger<CountryRepository> logger)
         {
             _adoCommand = adoCommand;
-            _executionResult = executionResult;
+            _resultFactory = resultFactory;
             _logger = logger;
         }
 
@@ -49,12 +43,12 @@ namespace InterviewTest.Data
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error creating country");
-                return _executionResult
+                return _resultFactory
                     .AsFailure()
                     .AddError("country", "Error creating country");
             }
 
-            return _executionResult.AsSuccessful();
+            return _resultFactory.AsSuccessful();
         }
 
         public async Task<ExecutionResult<Country?>> GetByIdAsync(long id)
@@ -77,12 +71,12 @@ namespace InterviewTest.Data
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error getting country with Id '{id}'", id);
-                return _executionResult
+                return _resultFactory
                     .AsFailure<Country?>(null)
                     .AddError("country", $"Error getting country with Id '{id}'");
             }
 
-            return _executionResult
+            return _resultFactory
                 .AsSuccessful(country);
         }
 
@@ -111,11 +105,11 @@ namespace InterviewTest.Data
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error getting country");
-                return _executionResult
+                return _resultFactory
                     .AsFailure<IEnumerable<Country>>(Countrys)
-                    .AddError("country", $"Error getting country");
+                    .AddError("country", "Error getting country");
             }
-            return _executionResult
+            return _resultFactory
                 .AsSuccessful<IEnumerable<Country>>(Countrys);
         }
 
@@ -140,11 +134,11 @@ namespace InterviewTest.Data
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error updating country");
-                return _executionResult.AsFailure()
+                return _resultFactory.AsFailure()
                     .AddError("country", "Error updating country");
             }
 
-            return _executionResult.AsSuccessful();
+            return _resultFactory.AsSuccessful();
         }
 
         private void AddParamenters(IInterviewTestDataBaseCommand command, Country country)

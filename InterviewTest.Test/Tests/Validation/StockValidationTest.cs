@@ -1,7 +1,7 @@
 ﻿using AutoFixture;
 using FluentValidation;
 using InterviewTest.Common.Dto;
-using InterviewTest.Service;
+using InterviewTest.Service.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace InterviewTest.Test.Tests.Validation

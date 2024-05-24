@@ -1,22 +1,12 @@
 ﻿using AutoMapper;
 using InterviewTest.Common;
 using InterviewTest.Common.Dto;
-using InterviewTest.Data;
+using InterviewTest.Data.Interfaces;
 using InterviewTest.Entity;
+using InterviewTest.Service.Interfaces;
 
 namespace InterviewTest.Service
 {
-    public interface IUserService
-    {
-        public Task<UserListDto?> GetByIdAsync(long id);
-        Task<UserListDto?> GetByEmailAsync(string email);
-        public Task<IEnumerable<UserListDto>> GetAsync(int page = 1, int pageSize = 10, byte? age = null, string? country = null);
-        public Task AddAsync(UserCreationDto userDto);
-        public Task AddAsync(IEnumerable<UserCreationDto> userDtos);
-        public Task UpdateAsync(UserUpdateDto userDto);
-        public Task DeleteAsync(long id);
-    }
-
     public class UserService : IUserService
     {
         private readonly IMapper _mapper;

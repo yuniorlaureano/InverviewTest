@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using InterviewTest.Data.Interfaces;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace InterviewTest.Data.Extensions
 {

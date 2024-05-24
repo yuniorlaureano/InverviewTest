@@ -1,4 +1,6 @@
 ﻿using InterviewTest.Common;
+using InterviewTest.Data.Decorators;
+using InterviewTest.Data.Interfaces;
 using InterviewTest.Entity;
 using Microsoft.Data.SqlClient;
 using System.Data;
@@ -6,23 +8,6 @@ using System.Text;
 
 namespace InterviewTest.Data
 {
-    public interface IStockRepository
-    {
-        public Task<Stock?> GetByIdAsync(long id);
-        public Task<IEnumerable<Stock>> GetAsync(
-            int page = 1,
-            int pageSize = 10,
-            TransactionType? transactionType = null,
-            string? description = null);
-        Task<IEnumerable<AvailableProduct>> GetProductsInStockAsync(
-            int page = 1,
-            int pageSize = 10,
-            TransactionType? transactionType = null);
-        public Task AddAsync(Stock stock, IEnumerable<StockDetail> stockDetails);
-        public Task UpdateAsync(Stock stock, IEnumerable<StockDetail> stockDetails);
-        public Task DeleteAsync(long id);
-    }
-
     public class StockRepository : IStockRepository
     {
         private readonly IADOCommand _adoCommand;

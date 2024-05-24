@@ -1,21 +1,11 @@
-﻿using InterviewTest.Entity;
+﻿using InterviewTest.Data.Interfaces;
+using InterviewTest.Entity;
 using Microsoft.Data.SqlClient;
 using System.Data;
 using System.Text;
 
 namespace InterviewTest.Data
 {
-    public interface IUserRepository
-    {
-        public Task<TemporalUser?> GetByIdAsync(long id);
-        Task<TemporalUser?> GetByEmailAsync(string email);
-        public Task<IEnumerable<TemporalUser>> GetAsync(int page = 1, int pageSize = 10, byte? age = null, string? country = null);
-        public Task AddAsync(TemporalUser user);
-        public Task AddAsync(IEnumerable<TemporalUser> user);
-        public Task UpdateAsync(TemporalUser user);
-        public Task DeleteAsync(long id);
-    }
-
     public class UserRepository : IUserRepository
     {
         private readonly IADOCommand _adoCommand;

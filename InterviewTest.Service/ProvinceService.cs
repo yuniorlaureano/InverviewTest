@@ -1,18 +1,11 @@
 ﻿using AutoMapper;
 using InterviewTest.Common.Dto;
-using InterviewTest.Data;
+using InterviewTest.Data.Interfaces;
 using InterviewTest.Entity;
+using InterviewTest.Service.Interfaces;
 
 namespace InterviewTest.Service
 {
-    public interface IProvinceService
-    {
-        public Task<ProvinceListDto?> GetByIdAsync(long id);
-        Task<IEnumerable<ProvinceListDto>> GetAsync(int page = 1, int pageSize = 10, string? name = null, string? province = null);
-        public Task AddAsync(ProvinceCreationDto ProvinceDto);
-        public Task UpdateAsync(ProvinceUpdateDto ProvinceDto);
-    }
-
     public class ProvinceService : IProvinceService
     {
         private readonly IMapper _mapper;

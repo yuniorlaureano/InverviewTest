@@ -2,7 +2,7 @@
 using InterviewTest.Api.Util;
 using InterviewTest.Common;
 using InterviewTest.Common.Dto;
-using InterviewTest.Service;
+using InterviewTest.Service.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;

@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using InterviewTest.Common.Dto;
+using InterviewTest.Service.Interfaces;
 
 namespace InterviewTest.Service.Validators
 {

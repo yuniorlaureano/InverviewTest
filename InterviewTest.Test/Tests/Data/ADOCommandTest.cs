@@ -1,5 +1,7 @@
 ﻿using FluentAssertions;
 using InterviewTest.Data;
+using InterviewTest.Data.Decorators;
+using InterviewTest.Data.Interfaces;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;

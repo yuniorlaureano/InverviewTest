@@ -1,18 +1,11 @@
 ﻿using AutoMapper;
 using InterviewTest.Common.Dto;
-using InterviewTest.Data;
+using InterviewTest.Data.Interfaces;
 using InterviewTest.Entity;
+using InterviewTest.Service.Interfaces;
 
 namespace InterviewTest.Service
 {
-    public interface ICityService
-    {
-        public Task<CityListDto?> GetByIdAsync(long id);
-        Task<IEnumerable<CityListDto>> GetAsync(int page = 1, int pageSize = 10, string? name = null, string? City = null);
-        public Task AddAsync(CityCreationDto CityDto);
-        public Task UpdateAsync(CityUpdateDto CityDto);
-    }
-
     public class CityService : ICityService
     {
         private readonly IMapper _mapper;

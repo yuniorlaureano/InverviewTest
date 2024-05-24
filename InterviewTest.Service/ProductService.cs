@@ -1,20 +1,11 @@
 ﻿using AutoMapper;
 using InterviewTest.Common.Dto;
-using InterviewTest.Data;
+using InterviewTest.Data.Interfaces;
 using InterviewTest.Entity;
+using InterviewTest.Service.Interfaces;
 
 namespace InterviewTest.Service
 {
-    public interface IProductService
-    {
-        public Task<ProductListDto?> GetByIdAsync(long id);
-        Task<IEnumerable<ProductListDto>> GetByIdsAsync(List<long> ids);
-        Task<IEnumerable<ProductListDto>> GetAsync(int page = 1, int pageSize = 10, string? code = null, string? name = null);
-        public Task AddAsync(ProductCreationDto productDto);
-        public Task UpdateAsync(ProductUpdateDto productDto);
-        public Task DeleteAsync(long id);
-    }
-
     public class ProductService : IProductService
     {
         private readonly IMapper _mapper;
