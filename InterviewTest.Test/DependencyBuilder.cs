@@ -1,4 +1,5 @@
-﻿using InterviewTest.Data;
+﻿using InterviewTest.Common.Extensions;
+using InterviewTest.Data;
 using InterviewTest.Data.Extensions;
 using InterviewTest.Service.Extensions;
 using Microsoft.Extensions.Configuration;
@@ -24,6 +25,7 @@ namespace InterviewTest.Test
                 services.AddServices();
                 services.AddMappings();
                 services.AddValidators();
+                services.AddCommons();
             }
 
             var mockLogger = new Mock<ILogger<ADOCommand>>();

@@ -1,8 +1,14 @@
 using AutoFixture;
 using AutoMapper;
 using InterviewTest.Common.Dto;
+using InterviewTest.Common.Extensions;
+using InterviewTest.Data;
+using InterviewTest.Data.Extensions;
 using InterviewTest.Service;
+using InterviewTest.Service.Extensions;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Moq;
 
 namespace InterviewTest.Test.Tests.Service
 {
@@ -15,7 +21,17 @@ namespace InterviewTest.Test.Tests.Service
 
         public CountryServiceTest()
         {
-            _services = DependencyBuilder.GetServices();
+            _services = DependencyBuilder.GetServices((collection, _) =>
+            {
+                collection.AddRepositories();
+                collection.AddServices();
+                collection.AddMappings();
+                collection.AddValidators();
+                collection.AddCommons();
+
+                var mockLogger = new Mock<ILogger<CountryRepository>>();
+                collection.AddSingleton<ILogger<CountryRepository>>(mockLogger.Object);
+            });
             _fixture = new Fixture();
             _countryService = _services.GetRequiredService<ICountryService>();
             _mapper = _services.GetRequiredService<IMapper>();
@@ -28,8 +44,13 @@ namespace InterviewTest.Test.Tests.Service
                 .Build<CountryCreationDto>()
                 .Create();
 
-            var countries = await _countryService.GetAsync(name: country.Name);
-            Assert.NotNull(countries);
+            await _countryService.AddAsync(country);
+
+            var result = await _countryService.GetAsync(name: country.Name);
+
+            Assert.True(result.Data.Any());
+            Assert.True(result.IsSuccess);
+            Assert.False(result.Errors.Any());
         }
 
         [Fact]
@@ -41,7 +62,7 @@ namespace InterviewTest.Test.Tests.Service
 
             await _countryService.AddAsync(country);
 
-            var insertedcountry = (await _countryService.GetAsync(name: country.Name)).First();
+            var insertedcountry = (await _countryService.GetAsync(name: country.Name)).Data.First();
 
             insertedcountry.Name = "Modified " + Guid.NewGuid();
 
@@ -50,7 +71,7 @@ namespace InterviewTest.Test.Tests.Service
 
             var updatedcountry = await _countryService.GetByIdAsync(insertedcountry.Id);
 
-            Assert.Equal(updatedcountry.Name, insertedcountry.Name);
+            Assert.Equal(updatedcountry.Data.Name, insertedcountry.Name);
         }
 
         [Fact]
@@ -62,7 +83,7 @@ namespace InterviewTest.Test.Tests.Service
 
             await _countryService.AddAsync(country);
 
-            var insertedcountry = (await _countryService.GetAsync(name: country.Name)).First();
+            var insertedcountry = (await _countryService.GetAsync(name: country.Name)).Data.First();
 
             Assert.NotNull(insertedcountry);
         }
@@ -76,11 +97,11 @@ namespace InterviewTest.Test.Tests.Service
 
             await _countryService.AddAsync(country);
 
-            var insertedcountry = (await _countryService.GetAsync(name: country.Name)).First();
+            var insertedcountry = (await _countryService.GetAsync(name: country.Name)).Data.First();
 
             var countryById = await _countryService.GetByIdAsync(insertedcountry.Id);
 
-            Assert.NotNull(countryById);
+            Assert.NotNull(countryById.Data);
         }
     }
 }

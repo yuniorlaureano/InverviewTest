@@ -1,4 +1,5 @@
 using InterviewTest.Api.Util;
+using InterviewTest.Common.Extensions;
 using InterviewTest.Data.Extensions;
 using InterviewTest.Service.Extensions;
 using Microsoft.AspNetCore.Authorization;
@@ -17,6 +18,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerWithJwt();
 builder.Host.AddSerilogAsLogger();
 
+builder.Services.AddCommons();
 builder.Services.AddRepositories();
 builder.Services.AddServices();
 builder.Services.AddMappings();

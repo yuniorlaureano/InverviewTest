@@ -13,7 +13,7 @@ namespace InterviewTest.Service.Validators
                 .MaximumLength(50)
                 .MustAsync(async (name, token) =>
                 {
-                    return !(await countryService.GetAsync(name: name)).Any();
+                    return !(await countryService.GetAsync(name: name)).Data.Any();
                 }).WithMessage("The country already exist");
         }
     }

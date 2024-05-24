@@ -10,4 +10,8 @@
     <Folder Include="Security\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Options" Version="6.0.0" />
+  </ItemGroup>
+
 </Project>
